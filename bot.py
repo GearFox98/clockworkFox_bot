@@ -19,6 +19,7 @@ import lib.words as words
 
 #Server
 server = Flask(__name__)
+PORT = int(os.environ.get('PORT', '8443'))
 
 #LOGGER
 logging.basicConfig(
@@ -212,7 +213,7 @@ if __name__ == "__main__":
   ))
 
   updater.start_webhook(listen="0.0.0.0",
-                        port=80,
+                        port=PORT,
                         url_path=TOKEN)
   updater.bot.set_webhook("https://clockworkfox-bot.herokuapp.com/" + TOKEN)
   updater.idle()
