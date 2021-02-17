@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import os
 from flask import Flask, request
 from telegram.ext import (Updater,
                           CommandHandler,
