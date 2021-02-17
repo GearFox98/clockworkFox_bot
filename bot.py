@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
+from flask import Flask, request
 from telegram.ext import (Updater,
                           CommandHandler,
                           CallbackQueryHandler,
@@ -15,6 +16,9 @@ from telegram import (chat,
 import lib.rhandler as rh
 import lib.fshandler as fh
 import lib.words as words
+
+#Server
+server = Flask(__name__)
 
 #LOGGER
 logging.basicConfig(
@@ -207,5 +211,8 @@ if __name__ == "__main__":
       fallbacks=[]
   ))
 
-  updater.start_polling()
+  updater.start_webhook(listen="0.0.0.0",
+                        port=80,
+                        url_path=TOKEN)
+  updater.bot.set_webhook("https://clockworkfox-bot.herokuapp.com/" + TOKEN)
   updater.idle()
