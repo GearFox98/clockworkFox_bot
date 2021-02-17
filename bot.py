@@ -56,10 +56,13 @@ def welcoming(update, context):
   )
 
 def startEvent(update, context):
-  update.message.reply_text(
-    text = '¿Cuál será el anuncio?'
-  )
-  return STATES['EVENT']
+  if update.effective_chat.id < 0:
+    update.message.reply_text(
+      text = '¿Cuál será el anuncio?'
+    )
+    return STATES['EVENT']
+  else:
+    update.message.reply_text(text="Lo siento, esta acción solo está permitida en grupos")
 
 def setEvent(update, context):
   id = update.effective_chat.id
