@@ -31,12 +31,12 @@ def scramble(objects):
             break
     return picked
 
-def superScramble(objects, times):
-    if times <= 0:
-        times = 1
-    for x in range(times):
-        y = scramble(objects)
-    return y
+#def superScramble(objects, times):
+#    if times <= 0:
+#        times = 1
+#    for x in range(times):
+#        y = scramble(objects)
+#    return y
 
 def doAssignments(cont):
     if len(cont) >= 3:
