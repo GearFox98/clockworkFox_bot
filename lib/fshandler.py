@@ -11,7 +11,7 @@ SYS = "../sys/"
 LOG = "../logs/log_"
 
 def getToken():
-    return os.environ['token']
+    return os.environ['TOKEN']
 
 def loadConfig(gId):
     x = SYS + str(gId) + "_lang.conf"
