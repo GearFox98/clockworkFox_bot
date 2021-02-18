@@ -9,6 +9,7 @@ import os
 
 SYS = "../sys/"
 LOG = "../logs/log_"
+IS_EVENT = False
 
 def getToken():
     return os.environ['TOKEN']

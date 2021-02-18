@@ -17,8 +17,8 @@ Si quieres saber como hacer algunas cosas puedes usar /help
     }
 
 EVENT = {
-    'en' : '''Alright! Here\'s the new #CLOCKWORK_EVENT\n''',
-    'es' : '''¡Bien! Acá está el nuevo #CLOCKWORK_EVENT\n''',
+    'en' : '''Alright! Here\'s the new #CLOCKWORK_EVENT\n\n''',
+    'es' : '''¡Bien! Acá está el nuevo #CLOCKWORK_EVENT\n\n''',
     'en_btn' : "I\'m in!",
     'es_btn' : "¡Cuenta conmigo!",
     'en_error' : "Sorry, there\'s an event running",
@@ -32,9 +32,9 @@ LANG = {
 
 HELP = {
   'en' : '''Here\'s some help
-By using the command /new_event followed by the text of the event we start a new event, then we set a deadline, there\'s only allowed an event once at the time.
-With the command /language you\'ll be able to change my language''',
+By using the command /new_event followed by the text of the event we start a new event, then we set a deadline, there\'s only allowed an event once at the time.''',
+#With the command /language you\'ll be able to change my language''',
   'es' : '''Acá un poco de ayuda
-Usando el comando /new_event seguido del texto del evento comezamos un nuevo evento, luego ponemos una fecha límite, solo se permite un evento a la vez.
-Con el comando /language podrás cambiar mi idioma'''
+Usando el comando /new_event seguido del texto del evento comezamos un nuevo evento, luego ponemos una fecha límite, solo se permite un evento a la vez.'''
+#Con el comando /language podrás cambiar mi idioma'''
 }

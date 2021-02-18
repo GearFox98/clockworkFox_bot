@@ -33,12 +33,6 @@ TOKEN = fh.getToken()
 
 #Event variables
 #CONTESTANTS = ['None']
-EVENT = 0
-
-STATES = {
-  'EVENT' : 0,
-  'DATE' : 1
-}
 
 CONT = ['None']
 
@@ -62,64 +56,76 @@ def welcoming(update, context):
   )
 
 def startEvent(update, context):
-  if update.effective_chat.id < 0:
-    update.message.reply_text(
-      text = '¿Cuál será el anuncio?'
-    )
-    return STATES['EVENT']
+  id = update.effective_chat.id
+  if id < 0:
+    userid = update.effective_user.id
+    admins = context.bot.get_chat_administrators(id)
+    admId = list()
+    for adm in admins:
+      admId.append(adm.user.id)
+    if not admId.__contains__(userid):
+      update.message.reply_text(
+        text = "Lo siento, debes ser administrador para crear eventos"
+      )
+    else:
+      if not fh.IS_EVENT:
+        txt = context.args
+        if len(txt) == 0:
+          context.bot.send_message(
+            chat_id = id,
+            text = "Lo siento, necesito un mensaje para el evento"
+          )
+        else:
+          if len(CONT) > 0:
+            CONT.pop(0)
+          text = " ".join(txt)
+          button = InlineKeyboardButton(
+            text = words.EVENT[LANG + "_btn"], #TODO
+            callback_data = 'im_in'
+          )
+          context.bot.send_message(
+            chat_id = id,
+            text = words.EVENT[LANG] + text,
+            reply_markup = InlineKeyboardMarkup([
+              [button]
+            ])
+          )
+        fh.IS_EVENT = True
+      else:
+        context.bot.send_message(
+          chat_id = id,
+          text = "Ya hay un evento activo"
+        )
   else:
     update.message.reply_text(text="Lo siento, esta acción solo está permitida en grupos")
 
-def setEvent(update, context):
-  id = update.effective_chat.id
-  userid = update.effective_user.id
-  admins = context.bot.get_chat_administrators(id)
-  if len(CONT) > 0:
-    CONT.pop(0)
-  for adm in admins:
-    if adm.user.id == userid:
-      text = update.message.text
-      #if EVENT == 0:
-      button = InlineKeyboardButton(
-        text = words.EVENT[LANG + "_btn"], #TODO
-        callback_data = 'im_in'
-      )
-      context.bot.send_message(
-        id = id,
-        text = words.EVENT[LANG] + text,
-        reply_markup = InlineKeyboardMarkup([
-          [button]
-        ])
-      )
-      #EVENT = 1
-      #else:
-        #update.message.reply_text(words.EVENT[LANG + "_error"])
-      #return STATES['DATE']
-      return ConversationHandler.END
-  
-def setDate(update, context):
-  #update.message.reply_text(
-  #  text = 'Definamos una fecha, por favor, use el formato dia-mes-año\nPor ejemplo: **31-1-2020**'
-  #)
-  #text = update.message.text
-  pass
 
 def finishEvent(update, context):
   x = rh.doAssignments(CONT)
-  if x == 'nil':
-    update.message.reply_text(
-      text = "No hay suficientes participantes, deben haber al menos 3"
+  if not fh.IS_EVENT:
+    context.bot.send_message(
+      chat_id = update.effective_chat.id,
+      text = "No hay eventos activos"
     )
   else:
-    CURRENT_GROUP = update.effective_chat.id
-    for i in x:
-      userid = i[0][0]
-      currentuser = i[0][1]
-      username = i [1][1]
-      context.bot.send_message(userid,
-                                f'Hola {currentuser} su amigo secreto del evento es: {username}\nRecuerde, debe mantener el secreto hasta el día de entrega'
-                              )
-    context.bot.send_message(CURRENT_GROUP, 'Todos los concursantes han recibido sus instrucciones, recuerden divertirse\n#CLOCKWORK_EVENT')
+    if x == 'nil':
+      update.message.reply_text(
+        text = "No hay suficientes participantes, deben haber al menos 3"
+      )
+    else:
+      CURRENT_GROUP = update.effective_chat.id
+      for i in x:
+        userid = i[0][0]
+        currentuser = i[0][1]
+        username = i [1][1]
+        try:
+          context.bot.send_message(userid,
+                                    f'Hola {currentuser} su amigo secreto del evento es: {username}\nRecuerde, debe mantener el secreto hasta el día de entrega'
+                                  )
+        except Exception as e:
+          LOGGER.info(e)
+      context.bot.send_message(CURRENT_GROUP, 'Todos los concursantes han recibido sus instrucciones, recuerden divertirse\n#CLOCKWORK_EVENT')
+      fh.IS_EVENT = False
 
 def helpPrint(update, context):
     update.message.reply_text(words.HELP[LANG])
@@ -138,9 +144,12 @@ def counter(update, context):
   else:
     x = (userid, userfname)
   if not CONT.__contains__(x):
-    CONT.append(x)
-    query.answer('¡Listo!')
-    context.bot.send_message(id, '{} se ha unido al evento!'.format(userfname))
+    try:
+      CONT.append(x)
+      query.answer('¡Listo!')
+      context.bot.send_message(id, '{} se ha unido al evento!'.format(userfname))
+    except Exception as ex:
+      LOGGER.info(ex)
   else:
     query.answer('Ya estás en el evento')
   #fh.writeConts(CONTESTANTS, id)
@@ -195,19 +204,18 @@ if __name__ == "__main__":
   dp.add_handler(ConversationHandler(
       entry_points=[
         #COMMANDS
-          CommandHandler('new_event', startEvent),
-          CommandHandler('finish_event', finishEvent),
-          CommandHandler('help', helpPrint),
-          CommandHandler('language', changeLang),
+        CommandHandler('new_event', startEvent),
+        CommandHandler('finish_event', finishEvent),
+        CommandHandler('help', helpPrint),
+        CommandHandler('language', changeLang),
+        #CommandHandler('rev', reverse),
         #CALLBACKS
-          CallbackQueryHandler(pattern='im_in', callback=counter),
-          CallbackQueryHandler(pattern='en', callback=eng),
-          CallbackQueryHandler(pattern='es', callback=esp)
+        CallbackQueryHandler(pattern='im_in', callback=counter),
+        CallbackQueryHandler(pattern='en', callback=eng),
+        CallbackQueryHandler(pattern='es', callback=esp)
       ],
 
       states={
-        STATES['EVENT']: [MessageHandler(Filters.text, setEvent)],
-        STATES['DATE']: [MessageHandler(Filters.text, setDate)]
       },
 
       fallbacks=[]
