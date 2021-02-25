@@ -68,8 +68,9 @@ def startEvent(update, context):
         text = "Lo siento, debes ser administrador para crear eventos"
       )
     else:
-      #status = fh.getEventStatus(id)
-      if not False: #status:
+      #Datahandler
+      status = fh.getEventStatus(id)
+      if not status:
         txt = context.args
         if len(txt) == 0:
           context.bot.send_message(
@@ -91,7 +92,8 @@ def startEvent(update, context):
               [button]
             ])
           )
-        #fh.setEventStatus(True, id)
+        #Datahandler
+        fh.setEventStatus(True, id)
       else:
         context.bot.send_message(
           chat_id = id,
@@ -103,7 +105,7 @@ def startEvent(update, context):
 
 def finishEvent(update, context):
   x = rh.doAssignments(CONT)
-  if not True:#fh.getEventStatus(update.effective_chat.id):
+  if not fh.getEventStatus(update.effective_chat.id):
     context.bot.send_message(
       chat_id = update.effective_chat.id,
       text = "No hay eventos activos"
@@ -126,7 +128,7 @@ def finishEvent(update, context):
         except Exception as e:
           LOGGER.info(e)
       context.bot.send_message(CURRENT_GROUP, 'Todos los concursantes han recibido sus instrucciones, recuerden divertirse\n#CLOCKWORK_EVENT')
-      #fh.setEventStatus(False, update.effective_chat.id)
+      fh.setEventStatus(False, update.effective_chat.id)
 
 def helpPrint(update, context):
     update.message.reply_text(words.HELP[LANG])

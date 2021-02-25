@@ -10,43 +10,40 @@ import os
 
 SYS = "../sys/"
 LOG = "../logs/log_"
-'''DB_NAME = "clockworkfox-bot"
-CLIENT = os.environ['MONGO']
+DB_NAME = "clockworkfox-bot"
+PASSWORD = os.environ['MONGO']
+CLIENT = "mongodb+srv://clockwork:"+PASSWORD+"@clockworkfox-telegram-b.5eqt8.mongodb.net/clockworkfox-bot?retryWrites=true&w=majority"
 
 cli = pymongo.MongoClient(CLIENT)
 
 def setEventList(gId, content):
-  collection = "event-content"
-  db = cli[DB_NAME][collection]
+  db = cli[DB_NAME]['event-content']
   try:
     db.update_one({"_id": gId}, {'$set':{"list": content}}, True)
   except Exception as _error:
     return _error
 
 def getEventList(gId):
-  collection = "event-content"
-  db = cli[DB_NAME][collection]
+  db = cli[DB_NAME]['event-content']
   data = db.find({"_id": gId}, {"_id": False})
   db.delete_many({"_id": gId})
   return data[0]['list']
 
 def setEventStatus(status, gId):
-  collection = "event"
-  db = cli[DB_NAME][collection]
+  db = cli[DB_NAME]['event']
   try:
     db.update_one({"_id": gId}, {'$set':{"is_active": status}}, True)
   except Exception as error:
     return error
 
 def getEventStatus(gId):
-  collection = "event"
-  db = cli[DB_NAME][collection]
+  db = cli[DB_NAME]['event']
   try:
     status = db.find({"_id": gId})
     return status[0]['is_active']
   except Exception as _error:
     db.insert_one({"_id": gId, "is_active": False})
-    return False'''
+    return False
 
 
 def getToken():
