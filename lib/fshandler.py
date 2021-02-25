@@ -5,7 +5,6 @@ FileSystem Handler
 """
 
 import pymongo
-from bson.objectid import ObjectId
 import os.path as ph
 import os
 
