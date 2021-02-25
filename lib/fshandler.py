@@ -10,7 +10,7 @@ import os
 
 SYS = "../sys/"
 LOG = "../logs/log_"
-DB_NAME = "clockworkfox-bot"
+'''DB_NAME = "clockworkfox-bot"
 CLIENT = os.environ['MONGO']
 
 cli = pymongo.MongoClient(CLIENT)
@@ -46,7 +46,7 @@ def getEventStatus(gId):
     return status[0]['is_active']
   except Exception as _error:
     db.insert_one({"_id": gId, "is_active": False})
-    return False
+    return False'''
 
 
 def getToken():
