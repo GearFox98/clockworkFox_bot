@@ -11,31 +11,31 @@ import os
 
 SYS = "../sys/"
 LOG = "../logs/log_"
-IS_EVENT = False
 DB_NAME = "clockworkfox-bot"
 CLIENT = os.environ['MONGO']
 
 cli = pymongo.MongoClient(CLIENT)
 
-def writeEventList(gId, content):
+def setEventList(gId, content):
   collection = "event-content"
   db = cli[DB_NAME][collection]
   try:
-    db.insert_one({"_id": gId, "list": content})
-  except Exception as error:
-    if type(error) == pymongo.errors.DuplicateKeyError:
-      db.update_one({"_id": gId}, {"list": content})
+    db.update_one({"_id": gId}, {'$set':{"list": content}}, True)
+  except Exception as _error:
+    return _error
 
 def getEventList(gId):
   collection = "event-content"
   db = cli[DB_NAME][collection]
-  return db.find({"_id": gId}, {"_id": False})
+  data = db.find({"_id": gId}, {"_id": False})
+  db.delete_many({"_id": gId})
+  return data[0]['list']
 
 def setEventStatus(status, gId):
   collection = "event"
   db = cli[DB_NAME][collection]
   try:
-    db.update_one({"_id": gId}, {"is_active": status}, True)
+    db.update_one({"_id": gId}, {'$set':{"is_active": status}}, True)
   except Exception as error:
     return error
 
@@ -43,7 +43,8 @@ def getEventStatus(gId):
   collection = "event"
   db = cli[DB_NAME][collection]
   try:
-    return db.find({"_id": gId}, {"_id": False})
+    status = db.find({"_id": gId})
+    return status[0]['is_active']
   except Exception as _error:
     db.insert_one({"_id": gId, "is_active": False})
     return False
