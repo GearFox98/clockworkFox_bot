@@ -38,7 +38,7 @@ CONT = ['None']
 
 def start(update, context):
   LOGGER.info(f"User: {update.effective_user['username']}, Chat status: started")
-  context.bot.send_chat_action(update.effective_chat.id, "typing", 3)
+  context.bot.send_chat_action(update.effective_chat.id, "typing")
   update.message.reply_text(words.GREETING[LANG])
     
 def welcoming(update, context):
@@ -52,7 +52,7 @@ def welcoming(update, context):
     is_bot = user.is_bot
   
   if not is_bot:
-    context.bot.send_chat_action(chatId, "typing", 3)
+    context.bot.send_chat_action(chatId, "typing")
     bot.send_message(
       chat_id = chatId,
       parse_mode = 'HTML',
@@ -68,7 +68,7 @@ def startEvent(update, context):
     for adm in admins:
       admId.append(adm.user.id)
     if not admId.__contains__(userid):
-      context.bot.send_chat_action(update.effective_chat.id, "typing", 3)
+      context.bot.send_chat_action(update.effective_chat.id, "typing")
       update.message.reply_text(
         text = "Lo siento, debes ser administrador para crear eventos"
       )
@@ -76,7 +76,7 @@ def startEvent(update, context):
       if not False: #status:
         txt = context.args
         if len(txt) == 0:
-          context.bot.send_chat_action(update.effective_chat.id, "typing", 3)
+          context.bot.send_chat_action(update.effective_chat.id, "typing")
           context.bot.send_message(
             chat_id = id,
             text = "Lo siento, necesito un mensaje para el evento"
@@ -85,7 +85,7 @@ def startEvent(update, context):
           if len(CONT) > 0:
             CONT.pop(0)
           text = " ".join(txt)
-          context.bot.send_chat_action(update.effective_chat.id, "typing", 3)
+          context.bot.send_chat_action(update.effective_chat.id, "typing")
           button = InlineKeyboardButton(
             text = words.EVENT[LANG + "_btn"], #TODO
             callback_data = 'im_in'
@@ -110,14 +110,14 @@ def startEvent(update, context):
 def finishEvent(update, context):
   x = rh.doAssignments(CONT)
   if not True: #fh.getEventStatus(update.effective_chat.id):
-    context.bot.send_chat_action(update.effective_chat.id, "typing", 3)
+    context.bot.send_chat_action(update.effective_chat.id, "typing")
     context.bot.send_message(
       chat_id = update.effective_chat.id,
       text = "No hay eventos activos"
     )
   else:
     if x == 'nil':
-      context.bot.send_chat_action(update.effective_chat.id, "typing", 3)
+      context.bot.send_chat_action(update.effective_chat.id, "typing")
       update.message.reply_text(
         text = "No hay suficientes participantes, deben haber al menos 3"
       )
@@ -128,18 +128,18 @@ def finishEvent(update, context):
         currentuser = i[0][1]
         username = i [1][1]
         try:
-          context.bot.send_chat_action(userid, "typing", 3)
+          context.bot.send_chat_action(userid, "typing")
           context.bot.send_message(userid,
                                     f'Hola {currentuser} su amigo secreto del evento es: {username}\nRecuerde, debe mantener el secreto hasta el día de entrega'
                                   )
         except Exception as e:
           LOGGER.info(e)
-      context.bot.send_chat_action(CURRENT_GROUP, "typing", 1)
+      context.bot.send_chat_action(CURRENT_GROUP, "typing")
       context.bot.send_message(CURRENT_GROUP, 'Todos los concursantes han recibido sus instrucciones, recuerden divertirse\n#CLOCKWORK_EVENT')
       #fh.setEventStatus(False, update.effective_chat.id)
 
 def helpPrint(update, context):
-  context.bot.send_chat_action(update.effective_chat.id, "typing", 3)
+  context.bot.send_chat_action(update.effective_chat.id, "typing")
   update.message.reply_text(words.HELP[LANG])
 
 def counter(update, context):
@@ -178,7 +178,7 @@ def changeLang(update, context):
     callback_data = 'es'
   )
   
-  context.bot.send_chat_action(update.effective_chat.id, "typing", 1)
+  context.bot.send_chat_action(update.effective_chat.id, "typing")
   update.message.reply_text(
     text = words.LANG[LANG],
     reply_markup = InlineKeyboardMarkup([

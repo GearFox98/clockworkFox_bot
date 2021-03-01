@@ -32,9 +32,9 @@ LANG = {
 
 HELP = {
   'en' : '''Here\'s some help
-By using the command /new_event followed by the text of the event we start a new event, then we set a deadline, there\'s only allowed an event once at the time.''',
+By using the command /new_event followed by the text of the event we start a new event, there\'s only allowed an event once at the time.''',
 #With the command /language you\'ll be able to change my language''',
   'es' : '''Acá un poco de ayuda
-Usando el comando /new_event seguido del texto del evento comezamos un nuevo evento, luego ponemos una fecha límite, solo se permite un evento a la vez.'''
+Usando el comando /new_event seguido del texto del evento comezamos un nuevo evento, solo se permite un evento a la vez.'''
 #Con el comando /language podrás cambiar mi idioma'''
 }
