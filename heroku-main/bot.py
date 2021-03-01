@@ -34,8 +34,6 @@ TOKEN = fh.getToken()
 #Event variables
 #CONTESTANTS = ['None']
 
-CONT = ['None']
-
 def start(update, context):
   LOGGER.info(f"User: {update.effective_user['username']}, Chat status: started")
   update.message.reply_text(words.GREETING[LANG])
@@ -52,7 +50,7 @@ def welcoming(update, context):
   bot.send_message(
     chat_id = chatId,
     parse_mode = 'HTML',
-    text = "Hola {} le damos la bienvenida al grupo <b>{}</b>".format(userName, groupName)
+    text = f"Hola {userName} le damos la bienvenida al grupo <b>{groupName}</b>"
   )
 
 def startEvent(update, context):
@@ -68,8 +66,9 @@ def startEvent(update, context):
         text = "Lo siento, debes ser administrador para crear eventos"
       )
     else:
-      #status = fh.getEventStatus(id)
-      if not False: #status:
+      #Datahandler
+      status = fh.getEventStatus(id)
+      if not status:
         txt = context.args
         if len(txt) == 0:
           context.bot.send_message(
@@ -77,8 +76,6 @@ def startEvent(update, context):
             text = "Lo siento, necesito un mensaje para el evento"
           )
         else:
-          if len(CONT) > 0:
-            CONT.pop(0)
           text = " ".join(txt)
           button = InlineKeyboardButton(
             text = words.EVENT[LANG + "_btn"], #TODO
@@ -91,7 +88,8 @@ def startEvent(update, context):
               [button]
             ])
           )
-        #fh.setEventStatus(True, id)
+        #Datahandler
+        fh.setEventStatus(True, id)
       else:
         context.bot.send_message(
           chat_id = id,
@@ -102,8 +100,9 @@ def startEvent(update, context):
 
 
 def finishEvent(update, context):
+  CONT = fh.getEventList(update.effective_chat.id)
   x = rh.doAssignments(CONT)
-  if not True:#fh.getEventStatus(update.effective_chat.id):
+  if not fh.getEventStatus(update.effective_chat.id):
     context.bot.send_message(
       chat_id = update.effective_chat.id,
       text = "No hay eventos activos"
@@ -126,19 +125,20 @@ def finishEvent(update, context):
         except Exception as e:
           LOGGER.info(e)
       context.bot.send_message(CURRENT_GROUP, 'Todos los concursantes han recibido sus instrucciones, recuerden divertirse\n#CLOCKWORK_EVENT')
-      #fh.setEventStatus(False, update.effective_chat.id)
+      fh.setEventStatus(False, update.effective_chat.id)
 
 def helpPrint(update, context):
     update.message.reply_text(words.HELP[LANG])
 
 def counter(update, context):
   query = update.callback_query
-  id = query.message.chat.id
+  gId = query.message.chat.id
   username = query.from_user.username
   userid = query.from_user.id
   userfname = query.from_user.first_name
-  
-  #CONTESTANTS = fh.readConts(id)
+  CONT = fh.getTempList(id)
+
+  print(type(CONT))
   
   if not username == None:
     x = (userid, "@{}".format(username))
@@ -148,12 +148,14 @@ def counter(update, context):
     try:
       CONT.append(x)
       query.answer('¡Listo!')
-      context.bot.send_message(id, '{} se ha unido al evento!'.format(userfname))
+      context.bot.send_message(gId, '{} se ha unido al evento!'.format(userfname))
+      fh.setEventList(gId, CONT)
     except Exception as ex:
       LOGGER.info(ex)
+    finally:
+      print("Contestants", fh.getTempList(gId))
   else:
     query.answer('Ya estás en el evento')
-  #fh.writeConts(CONTESTANTS, id)
 
 #Language Options
 def changeLang(update, context):
@@ -189,6 +191,14 @@ def esp(update, context):
   LANG = 'es'
   print(LANG)
 
+def ping(update, context):
+  if len(context.args) == 0:
+    x = fh.pingMongo(update.effective_chat.id, "nil")
+  else:
+    x = fh.pingMongo(update.effective_chat.id, " ".join(context.args))
+  update.message.reply_text(text = x)
+  print(fh.getTempList(update.effective_chat.id))
+
 if __name__ == "__main__":
   LOGGER.info("Started!")
   print('Now CLOCKWORK FOX is running!\n')
@@ -208,7 +218,7 @@ if __name__ == "__main__":
         CommandHandler('finish_event', finishEvent),
         CommandHandler('help', helpPrint),
         CommandHandler('language', changeLang),
-        #CommandHandler('rev', reverse),
+        CommandHandler('ping', ping),
         #CALLBACKS
         CallbackQueryHandler(pattern='im_in', callback=counter),
         CallbackQueryHandler(pattern='en', callback=eng),

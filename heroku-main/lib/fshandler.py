@@ -10,44 +10,68 @@ import os
 
 SYS = "../sys/"
 LOG = "../logs/log_"
-'''DB_NAME = "clockworkfox-bot"
-CLIENT = os.environ['MONGO']
+DB_NAME = "clockworkfox-bot"
+PASSWORD = os.environ['MONGO']
+CLIENT = "mongodb+srv://clockwork:"+PASSWORD+"@clockworkfox-telegram-b.5eqt8.mongodb.net/clockworkfox-bot?retryWrites=true&w=majority"
 
 cli = pymongo.MongoClient(CLIENT)
 
 def setEventList(gId, content):
-  collection = "event-content"
-  db = cli[DB_NAME][collection]
+  db = cli[DB_NAME]['eventcontent']
   try:
-    db.update_one({"_id": gId}, {'$set':{"list": content}}, True)
+    if not content == "nil":
+      db.update_one({"_id": gId}, {'$set':{"list": content}}, True)
   except Exception as _error:
     return _error
 
 def getEventList(gId):
-  collection = "event-content"
-  db = cli[DB_NAME][collection]
-  data = db.find({"_id": gId}, {"_id": False})
-  db.delete_many({"_id": gId})
-  return data[0]['list']
+  db = cli[DB_NAME]['eventcontent']
+  try:
+    data = db.find({"_id": gId})
+    db.delete_many({"_id": gId})
+    return data[0]['list']
+  except Exception as _error:
+    return "nil"
+
+def getTempList(gId):
+  try:
+    db = cli[DB_NAME]['eventcontent']
+    _data = db.find({'_id': gId})
+    dt = db.find({'_id': gId}, projection={'_id': False})
+    for x in dt:
+      print(x)
+    #return data[0]['list']
+  except Exception as _error:
+    return list()
 
 def setEventStatus(status, gId):
-  collection = "event"
-  db = cli[DB_NAME][collection]
+  db = cli[DB_NAME]['event']
   try:
     db.update_one({"_id": gId}, {'$set':{"is_active": status}}, True)
   except Exception as error:
     return error
 
 def getEventStatus(gId):
-  collection = "event"
-  db = cli[DB_NAME][collection]
+  db = cli[DB_NAME]['event']
   try:
     status = db.find({"_id": gId})
     return status[0]['is_active']
   except Exception as _error:
     db.insert_one({"_id": gId, "is_active": False})
-    return False'''
+    return False
 
+def pingMongo(chatId, text):
+  db = cli[DB_NAME]['test']
+  try:
+    db.update_one({"_id": chatId}, {'$set':{"text": text}}, True)
+  except Exception as error:
+    print(error)
+  finally:
+    data = db.find({"_id": chatId})
+    if data[0]['text'] == 'nil':
+      return "Empty"
+    else:
+      return(data[0]['text'])
 
 def getToken():
     return os.environ['TOKEN']
