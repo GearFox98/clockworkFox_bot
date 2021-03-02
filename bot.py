@@ -137,7 +137,7 @@ def finishEvent(update, context):
 def helpPrint(update, context):
   context.bot.send_chat_action(update.effective_chat.id, "typing")
   update.message.reply_text(
-    parse_mode = "Markdown",
+    parse_mode = 'MarkdownV2',
     text = words.HELP[LANG]
     )
 
@@ -202,7 +202,6 @@ def esp(update, context):
 
 def startRaffle(update, context):
   update.message.reply_text(
-    parse_mode = "Markdown",
     text = "Lo siento este comando se encuentra en desarrollo"
   )
 
