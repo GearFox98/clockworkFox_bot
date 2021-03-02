@@ -137,7 +137,7 @@ def finishEvent(update, context):
 def helpPrint(update, context):
   context.bot.send_chat_action(update.effective_chat.id, "typing")
   update.message.reply_text(
-    parse_mode = 'MarkdownV2',
+    parse_mode = 'HTML',
     text = words.HELP[LANG]
     )
 
