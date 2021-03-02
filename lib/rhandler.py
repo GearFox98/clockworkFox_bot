@@ -82,6 +82,8 @@ Once the max value is reached it returns a result (list)
 def raffle(cont, max = 3):
     if len(cont) == 0:
         return 'nil'
+    elif len(cont) <= max:
+        return cont
     else:
         raffleList = scramble(cont)
         finale = list()

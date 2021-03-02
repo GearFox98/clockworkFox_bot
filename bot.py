@@ -29,7 +29,6 @@ LANG = 'es'
 TOKEN = fh.getToken()
 
 #Event variables
-#CONTESTANTS = ['None']
 
 CONT = ['None']
 
@@ -137,7 +136,10 @@ def finishEvent(update, context):
 
 def helpPrint(update, context):
   context.bot.send_chat_action(update.effective_chat.id, "typing")
-  update.message.reply_text(words.HELP[LANG])
+  update.message.reply_text(
+    parse_mode = "MARKDOWN",
+    text = words.HELP[LANG]
+    )
 
 def counter(update, context):
   query = update.callback_query
@@ -198,6 +200,12 @@ def esp(update, context):
   LANG = 'es'
   print(LANG)
 
+def startRaffle(update, context):
+  update.message.reply_text(
+    parse_mode = "MARKDOWN",
+    text = "Lo siento este comando se encuentra en desarrollo"
+  )
+
 if __name__ == "__main__":
   LOGGER.info("Started!")
   print('Now CLOCKWORK FOX is running!\n')
@@ -217,6 +225,7 @@ if __name__ == "__main__":
         CommandHandler('finish_event', finishEvent),
         CommandHandler('help', helpPrint),
         CommandHandler('language', changeLang),
+        CommandHandler('raffle', startRaffle),
         #CommandHandler('rev', reverse),
         #CALLBACKS
         CallbackQueryHandler(pattern='im_in', callback=counter),
