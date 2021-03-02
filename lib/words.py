@@ -35,7 +35,7 @@ HELP = {
 By using the command /new_event followed by the text of the event we start a new event, there\'s only allowed an event once at the time.''',
 #With the command /language you\'ll be able to change my language''',
   'es' : '''Acá un poco de ayuda
-El comando **/new_event** seguido del texto del evento comezamos un nuevo evento, solo se permite un evento a la vez.
+El comando <b>/new_event</b> seguido del texto del evento comezamos un nuevo evento, solo se permite un evento a la vez.
 Con <b>/raffle</b> seguido de un texto comenzará un evento de sorteo, define un número de lugares para ganar un premio poniendo un número al final, en caso de omitirlo asumiré que habrán 3 lugares ganadores, por ejemplo:
 <b>/raffle Nuevo sorteo 3</b>'''
 #Con el comando /language podrás cambiar mi idioma'''
