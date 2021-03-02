@@ -7,13 +7,6 @@ Raffle Handler
 
 import random as rd
 
-ASSIGNMENTS = list()
-
-#def popContestants(conts):
-#    if CONTESTANTS.__contains__(conts):
-#        y = CONTESTANTS.index(conts)
-#        CONTESTANTS.pop(y)
-
 def scramble(objects):
     length = len(objects)
     picked = list()
@@ -31,15 +24,9 @@ def scramble(objects):
             break
     return picked
 
-#def superScramble(objects, times):
-#    if times <= 0:
-#        times = 1
-#    for x in range(times):
-#        y = scramble(objects)
-#    return y
-
-def doAssignments(cont):
+def doAssignments(cont):    
     if len(cont) >= 3:
+        ASSIGNMENTS = list()
         scrambleContestants = scramble(cont)
         length = len(scrambleContestants)
         if length > 5:
@@ -85,3 +72,25 @@ def doAssignments(cont):
         return ASSIGNMENTS
     else:
         return "nil"
+
+'''
+Raffle Maker
+
+It gets a list of participants [cont] and a maximum places to give prizes [max] by default 3
+Once the max value is reached it returns a result (list)
+'''
+def raffle(cont, max = 3):
+    if len(cont) == 0:
+        return 'nil'
+    else:
+        raffleList = scramble(cont)
+        finale = list()
+        temp = list()
+        count = 0
+        while count < max:
+            y = rd.randint(0, max - 1)
+            if not temp.__contains__(y):
+                finale.append(raffleList[y])
+                temp.append(y)
+                count += 1
+        return finale

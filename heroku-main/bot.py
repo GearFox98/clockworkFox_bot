@@ -3,7 +3,6 @@
 
 import logging
 import os
-from flask import Flask, request
 from telegram.ext import (Updater,
                           CommandHandler,
                           CallbackQueryHandler,
@@ -19,7 +18,6 @@ import lib.fshandler as fh
 import lib.words as words
 
 #Server
-server = Flask(__name__)
 PORT = int(os.environ.get('PORT', '8443'))
 
 #LOGGER
@@ -36,6 +34,7 @@ TOKEN = fh.getToken()
 
 def start(update, context):
   LOGGER.info(f"User: {update.effective_user['username']}, Chat status: started")
+  context.bot.send_chat_action(update.effective_chat.id, "typing")
   update.message.reply_text(words.GREETING[LANG])
     
 def welcoming(update, context):
@@ -46,12 +45,15 @@ def welcoming(update, context):
   
   for user in udp.new_chat_members:
     userName = user.first_name
+    is_bot = user.is_bot
   
-  bot.send_message(
-    chat_id = chatId,
-    parse_mode = 'HTML',
-    text = f"Hola {userName} le damos la bienvenida al grupo <b>{groupName}</b>"
-  )
+  if not is_bot:
+    context.bot.send_chat_action(chatId, "typing")
+    bot.send_message(
+      chat_id = chatId,
+      parse_mode = 'HTML',
+      text = "Hola {} le damos la bienvenida al grupo <b>{}</b>".format(userName, groupName)
+    )
 
 def startEvent(update, context):
   id = update.effective_chat.id
@@ -62,6 +64,7 @@ def startEvent(update, context):
     for adm in admins:
       admId.append(adm.user.id)
     if not admId.__contains__(userid):
+      context.bot.send_chat_action(id, "typing")
       update.message.reply_text(
         text = "Lo siento, debes ser administrador para crear eventos"
       )
@@ -71,12 +74,14 @@ def startEvent(update, context):
       if not status:
         txt = context.args
         if len(txt) == 0:
+          context.bot.send_chat_action(id, "typing")
           context.bot.send_message(
             chat_id = id,
             text = "Lo siento, necesito un mensaje para el evento"
           )
         else:
           text = " ".join(txt)
+          context.bot.send_chat_action(id, "typing")
           button = InlineKeyboardButton(
             text = words.EVENT[LANG + "_btn"], #TODO
             callback_data = 'im_in'
@@ -91,6 +96,7 @@ def startEvent(update, context):
         #Datahandler
         fh.setEventStatus(True, id)
       else:
+        context.bot.send_chat_action(id, "typing")
         context.bot.send_message(
           chat_id = id,
           text = "Ya hay un evento activo"
@@ -103,12 +109,14 @@ def finishEvent(update, context):
   CONT = fh.getEventList(update.effective_chat.id)
   x = rh.doAssignments(CONT)
   if not fh.getEventStatus(update.effective_chat.id):
+    context.bot.send_chat_action(update.effective_chat.id, "typing")
     context.bot.send_message(
       chat_id = update.effective_chat.id,
       text = "No hay eventos activos"
     )
   else:
     if x == 'nil':
+      context.bot.send_chat_action(update.effective_chat.id, "typing")
       update.message.reply_text(
         text = "No hay suficientes participantes, deben haber al menos 3"
       )
@@ -119,16 +127,19 @@ def finishEvent(update, context):
         currentuser = i[0][1]
         username = i [1][1]
         try:
+          context.bot.send_chat_action(update.effective_chat.id, "typing")
           context.bot.send_message(userid,
                                     f'Hola {currentuser} su amigo secreto del evento es: {username}\nRecuerde, debe mantener el secreto hasta el día de entrega'
                                   )
         except Exception as e:
           LOGGER.info(e)
+      context.bot.send_chat_action(update.effective_chat.id, "typing")
       context.bot.send_message(CURRENT_GROUP, 'Todos los concursantes han recibido sus instrucciones, recuerden divertirse\n#CLOCKWORK_EVENT')
       fh.setEventStatus(False, update.effective_chat.id)
 
 def helpPrint(update, context):
-    update.message.reply_text(words.HELP[LANG])
+  context.bot.send_chat_action(update.effective_chat.id, "typing")
+  update.message.reply_text(words.HELP[LANG])
 
 def counter(update, context):
   query = update.callback_query

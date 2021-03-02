@@ -55,7 +55,7 @@ def getEventStatus(gId):
   db = cli[DB_NAME]['event']
   try:
     status = db.find({"_id": gId})
-    return status[0]['is_active']
+    return(status[0]['is_active'])
   except Exception as _error:
     db.insert_one({"_id": gId, "is_active": False})
     return False

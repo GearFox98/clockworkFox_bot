@@ -3,7 +3,6 @@
 
 import logging
 import os
-from flask import Flask, request
 from telegram.ext import (Updater,
                           CommandHandler,
                           CallbackQueryHandler,
@@ -18,8 +17,6 @@ import lib.rhandler as rh
 import lib.fshandler as fh
 import lib.words as words
 
-#Server
-server = Flask(__name__)
 PORT = int(os.environ.get('PORT', '8443'))
 
 #LOGGER
