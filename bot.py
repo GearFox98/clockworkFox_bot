@@ -330,8 +330,8 @@ if __name__ == "__main__":
         CommandHandler('new_event', startEvent),
         CommandHandler('finish_event', finishEvent),
         CommandHandler('help', helpPrint),
-        CommandHandler('raffle', raffle),
-        CommandHandler('end_raffle', end_raffle),
+        CommandHandler('new_raffle', raffle),
+        CommandHandler('finish_raffle', end_raffle),
         CommandHandler('language', changeLang),
         CommandHandler('ping', ping),
         #CALLBACKS
