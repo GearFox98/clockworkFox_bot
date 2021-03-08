@@ -173,7 +173,9 @@ def raffle(update, context):
   gId = update.effective_chat.id
   is_raffle = fh.getIsRaffle(gId)
 
-  if not is_raffle:
+  update.message.reply_text("Lo siento, esta función se encuentra en desarrollo")
+  
+  '''if not is_raffle:
     try:
       arg = context.args
       if len(arg) > 1:
@@ -207,7 +209,7 @@ def raffle(update, context):
     except Exception as _error:
       pass
   else:
-    context.bot.send_message(gId, "Ya hay un sorteo activo")
+    context.bot.send_message(gId, "Ya hay un sorteo activo")'''
 
 def raffle_join(update, context):
   query = update.callback_query
@@ -244,7 +246,8 @@ def end_raffle(update, context):
   gId = update.effective_chat.id
   deleted = update.message.message_id
 
-  try:
+  update.message.reply_text("Lo siento, esta función se encuentra en desarrollo")
+  '''try:
     context.bot.delete_message(gId, deleted)
   except Exception as _error:
     pass
@@ -252,9 +255,7 @@ def end_raffle(update, context):
     raffle = fh.getRaffle(gId)
     winners = rh.raffle(raffle['cont'], raffle['max'])
 
-    text = '''Los ganadores son:
-    <hr>
-    <ul>'''
+    text = "Los ganadores son:\n<hr>\n<ul>"
 
     for x in winners:
       text += f"\n<li>{x[1]}</li>"
@@ -265,7 +266,7 @@ def end_raffle(update, context):
       chat_id = gId,
       parse_mode = 'HTML',
       text = text
-    )
+    )'''
 
 #Language Options
 def changeLang(update, context):
