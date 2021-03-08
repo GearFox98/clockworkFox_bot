@@ -166,14 +166,15 @@ def counter(update, context):
 
 #Raffles
 def raffle(update, context):
-  deleted = update.message.id
+  deleted = update.message.message_id
   gId = update.effective_chat.id
   try:
     arg = context.args
     if len(arg) > 1:
       try:
         places = int(arg[-1])
-        text = " ".join(arg[0:len(arg)-2])
+        arg.pop(-1)
+        text = " ".join(arg)
       except Exception as _error:
         pass
     else:
@@ -233,7 +234,7 @@ def raffle_join(update, context):
   
 def end_raffle(update, context):
   gId = update.effective_chat.id
-  deleted = update.message.id
+  deleted = update.message.message_id
 
   try:
     context.bot.delete_message(gId, deleted)

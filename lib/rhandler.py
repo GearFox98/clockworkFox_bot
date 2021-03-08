@@ -82,7 +82,7 @@ def raffle(cont, max = 3):
         counter = 0
         random = 0
         while counter < max:
-            tRand = rd.randint(0, len(cont))
+            tRand = rd.randint(0, len(cont) - 1)
             if not tRand == random:
                 finale.append(scCont[tRand])
                 random = tRand

@@ -58,7 +58,7 @@ def getEventStatus(gId):
 def setRaffleMax(gId, part):
   db = cli[DB_NAME]['raffle']
   try:
-    db.update_one({"_id": gId}, {'$set':{"is_raffle": True, "max": part, 'cont': list()}}, True)
+    db.insert_one({"_id": gId, "is_raffle": True, "max": part, 'cont': list()})
   except Exception as _error:
     return _error
 
@@ -77,11 +77,11 @@ def getRaffleCont(gId):
 def getRaffle(gId):
   db = cli[DB_NAME]['raffle']
   data = db.find({'_id': gId})
-  dataSet = {'max': data[0]['max'],
-            'cont': data[0]['cont']}
-  
-  db.delete_one({'_id': gId})
-  
+  dataSet = {
+    'max': data[0]['max'],
+    'cont': data[0]['cont']
+    }
+
   return dataSet
 
 def getIsRaffle(gId):
