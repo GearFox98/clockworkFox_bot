@@ -17,8 +17,8 @@ Si quieres saber como hacer algunas cosas puedes usar /help
     }
 
 EVENT = {
-    'en' : '''Alright! Here\'s the new #CLOCKWORK_EVENT\n\n''',
-    'es' : '''¡Bien! Acá está el nuevo #CLOCKWORK_EVENT\n\n''',
+    'en' : '''Alright! Here\'s the new #CLOCKWORK_EVENT\n<i>Make sure you have started me on private, else you won't receive the notification</i>\n\n''',
+    'es' : '''¡Bien! Acá está el nuevo #CLOCKWORK_EVENT\n<i>Asegúrate de haberme iniciado en privado, de otra forma no recibirás notificaciones</i>\n\n''',
     'en_btn' : "I\'m in!",
     'es_btn' : "¡Cuenta conmigo!",
     'en_error' : "Sorry, there\'s an event running",
@@ -32,11 +32,9 @@ LANG = {
 
 HELP = {
   'en' : '''Here\'s some help
-By using the command /new_event followed by the text of the event we start a new event, there\'s only allowed an event once at the time.''',
+By using the command /new_event followed by the text of the event we start a new event, then we set a deadline, there\'s only allowed an event once at the time.''',
 #With the command /language you\'ll be able to change my language''',
   'es' : '''Acá un poco de ayuda
-El comando <b>/new_event</b> seguido del texto del evento comezamos un nuevo evento, solo se permite un evento a la vez.
-Con <b>/raffle</b> seguido de un texto comenzará un evento de sorteo, define un número de lugares para ganar un premio poniendo un número al final, en caso de omitirlo asumiré que habrán 3 lugares ganadores, por ejemplo:
-<b>/raffle Nuevo sorteo 3</b>'''
+Usando el comando /new_event seguido del texto del evento comezamos un nuevo evento, luego ponemos una fecha límite, solo se permite un evento a la vez.'''
 #Con el comando /language podrás cambiar mi idioma'''
 }
