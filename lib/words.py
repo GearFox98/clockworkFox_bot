@@ -17,8 +17,8 @@ Si quieres saber como hacer algunas cosas puedes usar /help
     }
 
 EVENT = {
-    'en' : '''Alright! Here\'s the new #CLOCKWORK_EVENT\n<i>Make sure you have started me on <a href="https://t.me/clockworkfox_bot">private</a>, else you won't receive the notification</i>\n\n''',
-    'es' : '''¡Bien! Acá está el nuevo #CLOCKWORK_EVENT\n<<i>Asegúrate de haberme iniciado en <a href="https://t.me/clockworkfox_bot">privado</a>, de otra forma no recibirás notificaciones</i>\n\n''',
+    'en' : '''Alright! Here\'s the new #CLOCKWORK_EVENT\n<i>Make sure you have <b>started me</b> on private, else you won't receive the notification</i>\n\n''',
+    'es' : '''¡Bien! Acá está el nuevo #CLOCKWORK_EVENT\n<<i>Asegúrate de <b>haberme iniciado</b> en privado, de otra forma no recibirás notificaciones</i>\n\n''',
     'en_btn' : "I\'m in!",
     'es_btn' : "¡Cuenta conmigo!",
     'en_error' : "Sorry, there\'s an event running",
@@ -39,7 +39,7 @@ HELP = {
   'es' : '''Acá un poco de ayuda
 
 <b>/new_event <i>"texto del evento"</i></b> - Iniciaré un evento, solo se permite un evento por grupo a la vez.
-<b>/raffle <i>"texto del sorteo" "número de participantes"</i></b> - <a href="https://t.me/clockworkfox_bot">Iniciaré</a> un sorteo'''
+<b>/raffle <i>"texto del sorteo" "número de participantes"</i></b> - Iniciaré un sorteo'''
 #Con el comando /language podrás cambiar mi idioma'''
 }
 
