@@ -54,7 +54,10 @@ def welcoming(update, context):
 
 def helpPrint(update, context):
   context.bot.send_chat_action(update.effective_chat.id, "typing")
-  update.message.reply_text(words.HELP[LANG])
+  update.message.reply_text(
+    parse_mode = 'HTML',
+    text = words.HELP[LANG]
+    )
 
 #Events
 def startEvent(update, context):
