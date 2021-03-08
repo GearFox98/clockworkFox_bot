@@ -17,8 +17,8 @@ Si quieres saber como hacer algunas cosas puedes usar /help
     }
 
 EVENT = {
-    'en' : '''Alright! Here\'s the new #CLOCKWORK_EVENT\n\n''',
-    'es' : '''¡Bien! Acá está el nuevo #CLOCKWORK_EVENT\n\n''',
+    'en' : '''Alright! Here\'s the new #CLOCKWORK_EVENT\n<i>Make sure you have started me on private, else you won't receive the notification</i>\n\n''',
+    'es' : '''¡Bien! Acá está el nuevo #CLOCKWORK_EVENT\n<i>Asegúrate de haberme iniciado en privado, de otra forma no recibirás notificaciones</i>\n\n''',
     'en_btn' : "I\'m in!",
     'es_btn' : "¡Cuenta conmigo!",
     'en_error' : "Sorry, there\'s an event running",

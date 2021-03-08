@@ -84,11 +84,12 @@ def startEvent(update, context):
           context.bot.send_chat_action(id, "typing")
           button = InlineKeyboardButton(
             text = words.EVENT[LANG + "_btn"], #TODO
-            callback_data = 'im_in'
+            callback_data = 'im_in',
           )
           context.bot.send_message(
             chat_id = id,
             text = words.EVENT[LANG] + text,
+            parse_mode = 'HTML',
             reply_markup = InlineKeyboardMarkup([
               [button]
             ])
@@ -106,17 +107,15 @@ def startEvent(update, context):
 
 
 def finishEvent(update, context):
-  CONT = fh.getEventList(update.effective_chat.id)
-  x = rh.doAssignments(CONT)
   if not fh.getEventStatus(update.effective_chat.id):
-    context.bot.send_chat_action(update.effective_chat.id, "typing")
     context.bot.send_message(
       chat_id = update.effective_chat.id,
       text = "No hay eventos activos"
     )
   else:
+    CONT = fh.getTempList(update.effective_chat.id)
+    x = rh.doAssignments(CONT)
     if x == 'nil':
-      context.bot.send_chat_action(update.effective_chat.id, "typing")
       update.message.reply_text(
         text = "No hay suficientes participantes, deben haber al menos 3"
       )
@@ -127,13 +126,11 @@ def finishEvent(update, context):
         currentuser = i[0][1]
         username = i [1][1]
         try:
-          context.bot.send_chat_action(update.effective_chat.id, "typing")
           context.bot.send_message(userid,
                                     f'Hola {currentuser} su amigo secreto del evento es: {username}\nRecuerde, debe mantener el secreto hasta el día de entrega'
                                   )
         except Exception as e:
           LOGGER.info(e)
-      context.bot.send_chat_action(update.effective_chat.id, "typing")
       context.bot.send_message(CURRENT_GROUP, 'Todos los concursantes han recibido sus instrucciones, recuerden divertirse\n#CLOCKWORK_EVENT')
       fh.setEventStatus(False, update.effective_chat.id)
 
@@ -147,15 +144,21 @@ def counter(update, context):
   username = query.from_user.username
   userid = query.from_user.id
   userfname = query.from_user.first_name
-  CONT = fh.getTempList(id)
+  CONT = fh.getTempList(gId)
 
-  print(type(CONT))
+  print(CONT)
   
   if not username == None:
     x = (userid, "@{}".format(username))
   else:
     x = (userid, userfname)
-  if not CONT.__contains__(x):
+  
+  is_there = False
+  for temp in CONT:
+    if temp[0] == userid:
+      is_there = True
+  
+  if not is_there:
     try:
       CONT.append(x)
       query.answer('¡Listo!')

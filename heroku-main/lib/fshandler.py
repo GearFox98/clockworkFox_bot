@@ -17,37 +17,29 @@ CLIENT = "mongodb+srv://clockwork:"+PASSWORD+"@clockworkfox-telegram-b.5eqt8.mon
 cli = pymongo.MongoClient(CLIENT)
 
 def setEventList(gId, content):
-  db = cli[DB_NAME]['eventcontent']
+  db = cli[DB_NAME]['event']
   try:
     if not content == "nil":
-      db.update_one({"_id": gId}, {'$set':{"list": content}}, True)
+      db.update_one({"_id": gId}, {'$set':{"list": content}})
   except Exception as _error:
     return _error
 
-def getEventList(gId):
-  db = cli[DB_NAME]['eventcontent']
+def getTempList(gId):
+  db = cli[DB_NAME]['event']
   try:
     data = db.find({"_id": gId})
-    db.delete_many({"_id": gId})
     return data[0]['list']
   except Exception as _error:
-    return "nil"
-
-def getTempList(gId):
-  try:
-    db = cli[DB_NAME]['eventcontent']
-    _data = db.find({'_id': gId})
-    dt = db.find({'_id': gId}, projection={'_id': False})
-    for x in dt:
-      print(x)
-    #return data[0]['list']
-  except Exception as _error:
+    print("getTempList Error", _error)
     return list()
 
 def setEventStatus(status, gId):
   db = cli[DB_NAME]['event']
   try:
-    db.update_one({"_id": gId}, {'$set':{"is_active": status}}, True)
+    if status == True:
+      db.update_one({"_id": gId}, {'$set':{"is_active": status, "list": list()}}, True)
+    else:
+      db.update_one({"_id": gId}, {'$set':{"is_active": status}}, True)
   except Exception as error:
     return error
 
@@ -55,7 +47,7 @@ def getEventStatus(gId):
   db = cli[DB_NAME]['event']
   try:
     status = db.find({"_id": gId})
-    return(status[0]['is_active'])
+    return status[0]['is_active']
   except Exception as _error:
     db.insert_one({"_id": gId, "is_active": False})
     return False
