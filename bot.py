@@ -29,9 +29,6 @@ LOGGER = logging.getLogger()
 LANG = 'es'
 TOKEN = fh.getToken()
 
-#Event variables
-#CONTESTANTS = ['None']
-
 def start(update, context):
   LOGGER.info(f"User: {update.effective_user['username']}, Chat status: started")
   context.bot.send_chat_action(update.effective_chat.id, "typing")
@@ -55,6 +52,11 @@ def welcoming(update, context):
       text = "Hola {} le damos la bienvenida al grupo <b>{}</b>".format(userName, groupName)
     )
 
+def helpPrint(update, context):
+  context.bot.send_chat_action(update.effective_chat.id, "typing")
+  update.message.reply_text(words.HELP[LANG])
+
+#Events
 def startEvent(update, context):
   id = update.effective_chat.id
   if id < 0:
@@ -105,7 +107,6 @@ def startEvent(update, context):
   else:
     update.message.reply_text(text="Lo siento, esta acción solo está permitida en grupos")
 
-
 def finishEvent(update, context):
   if not fh.getEventStatus(update.effective_chat.id):
     context.bot.send_message(
@@ -134,10 +135,6 @@ def finishEvent(update, context):
       context.bot.send_message(CURRENT_GROUP, 'Todos los concursantes han recibido sus instrucciones, recuerden divertirse\n#CLOCKWORK_EVENT')
       fh.setEventStatus(False, update.effective_chat.id)
 
-def helpPrint(update, context):
-  context.bot.send_chat_action(update.effective_chat.id, "typing")
-  update.message.reply_text(words.HELP[LANG])
-
 def counter(update, context):
   query = update.callback_query
   gId = query.message.chat.id
@@ -145,11 +142,9 @@ def counter(update, context):
   userid = query.from_user.id
   userfname = query.from_user.first_name
   CONT = fh.getTempList(gId)
-
-  print(CONT)
   
   if not username == None:
-    x = (userid, "@{}".format(username))
+    x = (userid, f"@{username}")
   else:
     x = (userid, userfname)
   
@@ -166,10 +161,102 @@ def counter(update, context):
       fh.setEventList(gId, CONT)
     except Exception as ex:
       LOGGER.info(ex)
+  else:
+    query.answer('Ya estás en el evento')
+
+#Raffles
+def raffle(update, context):
+  deleted = update.message.id
+  gId = update.effective_chat.id
+  try:
+    arg = context.args
+    if len(arg) > 1:
+      try:
+        places = int(arg[-1])
+        text = " ".join(arg[0:len(arg)-2])
+      except Exception as _error:
+        pass
+    else:
+      text = arg[0]
+    
+    button = InlineKeyboardButton(
+            text = words.EVENT[LANG + "_btn"], #TODO
+            callback_data = 'raffle_join',
+          )
+    
+    context.bot.send_chat_action(update.effective_chat.id, "typing")
+    context.bot.send_message(
+      chat_id = gId,
+      parse_mode = 'HTML',
+      text = text + words.RAFFLE[LANG],
+      reply_markup = InlineKeyboardMarkup([
+              [button]
+            ])
+    )
+    
+    fh.setRaffleMax(gId, places)
+
+    context.bot.delete_message(gId, deleted)
+  except Exception as _error:
+    pass
+
+def raffle_join(update, context):
+  query = update.callback_query
+  gId = query.message.chat.id
+  username = query.from_user.username
+  userid = query.from_user.id
+  userfname = query.from_user.first_name
+
+  CONT = fh.getRaffleCont(gId)
+
+  if not username == None:
+    x = (userid, f"@{username}")
+  else:
+    x = (userid, userfname)
+  
+  is_there = False
+  for temp in CONT:
+    if temp[0] == userid:
+      is_there = True
+  
+  if not is_there:
+    try:
+      CONT.append(x)
+      query.answer('¡Listo!')
+      fh.setRaffle(gId, CONT)
+    except Exception as ex:
+      LOGGER.info(ex)
     finally:
       print("Contestants", fh.getTempList(gId))
   else:
     query.answer('Ya estás en el evento')
+  
+def end_raffle(update, context):
+  gId = update.effective_chat.id
+  deleted = update.message.id
+
+  try:
+    context.bot.delete_message(gId, deleted)
+  except Exception as _error:
+    pass
+  finally:
+    raffle = fh.getRaffle(gId)
+    winners = rh.raffle(raffle['cont'], raffle['max'])
+
+    text = '''Los ganadores son:
+    <hr>
+    <ul>'''
+
+    for x in winners:
+      text += f"\n<li>{x[1]}</li>"
+    
+    text += "</ul>"
+
+    context.bot.send_message(
+      chat_id = gId,
+      parse_mode = 'HTML',
+      text = text
+    )
 
 #Language Options
 def changeLang(update, context):
@@ -205,6 +292,7 @@ def esp(update, context):
   LANG = 'es'
   print(LANG)
 
+#PING
 def ping(update, context):
   if len(context.args) == 0:
     x = fh.pingMongo(update.effective_chat.id, "nil")
@@ -213,6 +301,7 @@ def ping(update, context):
   update.message.reply_text(text = x)
   print(fh.getTempList(update.effective_chat.id))
 
+#Start Bot
 if __name__ == "__main__":
   LOGGER.info("Started!")
   print('Now CLOCKWORK FOX is running!\n')
@@ -231,10 +320,13 @@ if __name__ == "__main__":
         CommandHandler('new_event', startEvent),
         CommandHandler('finish_event', finishEvent),
         CommandHandler('help', helpPrint),
+        CommandHandler('raffle', raffle),
+        CommandHandler('end_raffle', end_raffle),
         CommandHandler('language', changeLang),
         CommandHandler('ping', ping),
         #CALLBACKS
         CallbackQueryHandler(pattern='im_in', callback=counter),
+        CallbackQueryHandler(pattern='raffle_join', callback=raffle_join),
         CallbackQueryHandler(pattern='en', callback=eng),
         CallbackQueryHandler(pattern='es', callback=esp)
       ],

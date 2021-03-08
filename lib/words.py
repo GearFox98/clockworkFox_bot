@@ -32,9 +32,18 @@ LANG = {
 
 HELP = {
   'en' : '''Here\'s some help
-By using the command /new_event followed by the text of the event we start a new event, then we set a deadline, there\'s only allowed an event once at the time.''',
+
+<b>/new_event <i>"event text"</i></b> - I'll start a new event, there's only allowed one event at time.
+<b>/raffle <i>"texto del sorteo" "número de participantes"</i></b> - I\'ll start a raffle.''',
 #With the command /language you\'ll be able to change my language''',
   'es' : '''Acá un poco de ayuda
-Usando el comando /new_event seguido del texto del evento comezamos un nuevo evento, luego ponemos una fecha límite, solo se permite un evento a la vez.'''
+
+<b>/new_event <i>"texto del evento"</i></b> - Iniciaré un evento, solo se permite un evento por grupo a la vez.
+<b>/raffle <i>"texto del sorteo" "número de participantes"</i></b> - Iniciaré un sorteo'''
 #Con el comando /language podrás cambiar mi idioma'''
+}
+
+RAFFLE = {
+    'en' : '''\n#CLOCKWORK_RAFFLE Press the button below to participate!''',
+    'es' : '''\n#CLOCKWORK_RAFFLE ¡Presiona el botón de abajo para participar!'''
 }

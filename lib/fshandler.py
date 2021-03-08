@@ -16,6 +16,8 @@ CLIENT = "mongodb+srv://clockwork:"+PASSWORD+"@clockworkfox-telegram-b.5eqt8.mon
 
 cli = pymongo.MongoClient(CLIENT)
 
+#Database
+#Event!
 def setEventList(gId, content):
   db = cli[DB_NAME]['event']
   try:
@@ -50,6 +52,44 @@ def getEventStatus(gId):
     return status[0]['is_active']
   except Exception as _error:
     db.insert_one({"_id": gId, "is_active": False})
+    return False
+
+#Raffle!
+def setRaffleMax(gId, part):
+  db = cli[DB_NAME]['raffle']
+  try:
+    db.update_one({"_id": gId}, {'$set':{"is_raffle": True, "max": part, 'cont': list()}}, True)
+  except Exception as _error:
+    return _error
+
+def setRaffle(gId, cont):
+  db = cli[DB_NAME]['raffle']
+  try:
+    db.update_one({'_id': gId}, {'$set':{'cont': cont}})
+  except Exception as _error:
+    return _error
+
+def getRaffleCont(gId):
+  db = cli[DB_NAME]['raffle']
+  data = db.find({'_id': gId})
+  return data[0]['cont']
+
+def getRaffle(gId):
+  db = cli[DB_NAME]['raffle']
+  data = db.find({'_id': gId})
+  dataSet = {'max': data[0]['max'],
+            'cont': data[0]['cont']}
+  
+  db.delete_one({'_id': gId})
+  
+  return dataSet
+
+def getIsRaffle(gId):
+  db = cli[DB_NAME]['raffle']
+  try:
+    data = db.find({'_id': gId})
+    return data[0]['is_raffle']
+  except:
     return False
 
 def pingMongo(chatId, text):

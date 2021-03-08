@@ -7,11 +7,6 @@ Raffle Handler
 
 import random as rd
 
-#def popContestants(conts):
-#    if CONTESTANTS.__contains__(conts):
-#        y = CONTESTANTS.index(conts)
-#        CONTESTANTS.pop(y)
-
 def scramble(objects):
     length = len(objects)
     picked = list()
@@ -28,13 +23,6 @@ def scramble(objects):
         elif full == length:
             break
     return picked
-
-#def superScramble(objects, times):
-#    if times <= 0:
-#        times = 1
-#    for x in range(times):
-#        y = scramble(objects)
-#    return y
 
 def doAssignments(cont):
     ASSIGNMENTS = list()
@@ -84,3 +72,18 @@ def doAssignments(cont):
         return ASSIGNMENTS
     else:
         return "nil"
+
+def raffle(cont, max = 3):
+    if not len(cont) <= max:
+        return cont
+    else:
+        scCont = scramble(cont)
+        finale = list()
+        counter = 0
+        random = 0
+        while counter < max:
+            tRand = rd.randint(0, len(cont))
+            if not tRand == random:
+                finale.append(scCont[tRand])
+                random = tRand
+        return finale
