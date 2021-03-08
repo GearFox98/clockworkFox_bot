@@ -81,6 +81,8 @@ def getRaffle(gId):
     'max': data[0]['max'],
     'cont': data[0]['cont']
     }
+  
+  db.delete_one({'_id': gId})
 
   return dataSet
 

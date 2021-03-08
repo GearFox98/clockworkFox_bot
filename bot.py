@@ -168,38 +168,43 @@ def counter(update, context):
 def raffle(update, context):
   deleted = update.message.message_id
   gId = update.effective_chat.id
-  try:
-    arg = context.args
-    if len(arg) > 1:
-      try:
-        places = int(arg[-1])
-        arg.pop(-1)
-        text = " ".join(arg)
-      except Exception as _error:
-        pass
-    else:
-      text = arg[0]
-    
-    button = InlineKeyboardButton(
-            text = words.EVENT[LANG + "_btn"], #TODO
-            callback_data = 'raffle_join',
-          )
-    
-    context.bot.send_chat_action(update.effective_chat.id, "typing")
-    context.bot.send_message(
-      chat_id = gId,
-      parse_mode = 'HTML',
-      text = text + words.RAFFLE[LANG],
-      reply_markup = InlineKeyboardMarkup([
-              [button]
-            ])
-    )
-    
-    fh.setRaffleMax(gId, places)
+  is_raffle = fh.getIsRaffle(gId)
 
-    context.bot.delete_message(gId, deleted)
-  except Exception as _error:
-    pass
+  if not is_raffle:
+    try:
+      arg = context.args
+      if len(arg) > 1:
+        try:
+          places = int(arg[-1])
+          arg.pop(-1)
+          text = " ".join(arg)
+        except Exception as _error:
+          pass
+      else:
+        text = arg[0]
+      
+      button = InlineKeyboardButton(
+              text = words.EVENT[LANG + "_btn"], #TODO
+              callback_data = 'raffle_join',
+            )
+      
+      context.bot.send_chat_action(update.effective_chat.id, "typing")
+      context.bot.send_message(
+        chat_id = gId,
+        parse_mode = 'HTML',
+        text = text + words.RAFFLE[LANG],
+        reply_markup = InlineKeyboardMarkup([
+                [button]
+              ])
+      )
+      
+      fh.setRaffleMax(gId, places)
+
+      context.bot.delete_message(gId, deleted)
+    except Exception as _error:
+      pass
+  else:
+    context.bot.send_message(gId, "Ya hay un sorteo activo")
 
 def raffle_join(update, context):
   query = update.callback_query
