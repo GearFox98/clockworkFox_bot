@@ -5,92 +5,106 @@ FileSystem Handler
 """
 
 import pymongo
+import dataparser.parser as parser
 import os.path as ph
 import os
 
-SYS = "../sys/"
-LOG = "../logs/log_"
-DB_NAME = "clockworkfox-bot"
-PASSWORD = os.environ['MONGO']
-CLIENT = "mongodb+srv://clockwork:"+PASSWORD+"@clockworkfox-telegram-b.5eqt8.mongodb.net/clockworkfox-bot?retryWrites=true&w=majority"
+SYS = "sys"
+LOG = "logs/log_"
+#DB_NAME = "clockworkfox-bot"
+#PASSWORD = os.environ['MONGO']
+#CLIENT = "mongodb+srv://clockwork:"+PASSWORD+"@clockworkfox-telegram-b.5eqt8.mongodb.net/clockworkfox-bot?retryWrites=true&w=majority"
 
-cli = pymongo.MongoClient(CLIENT)
+#cli = pymongo.MongoClient(CLIENT)
 
 #Database
 #Event!
 def setEventList(gId, content):
-  db = cli[DB_NAME]['event']
+  #db = cli[DB_NAME]['event']
   try:
     if not content == "nil":
-      db.update_one({"_id": gId}, {'$set':{"list": content}})
+      #db.update_one({"_id": gId}, {'$set':{"list": content}})
+      parser.update_file(f"{SYS}/event/{gId}.json", {'id': gId, 'list': content})
   except Exception as _error:
     return _error
 
 def getTempList(gId):
-  db = cli[DB_NAME]['event']
+  #db = cli[DB_NAME]['event']
   try:
-    data = db.find({"_id": gId})
-    return data[0]['list']
+    #data = db.find({"_id": gId})
+    #return data[0]['list']
+    return parser.get_data(f"{SYS}/event/{gId}.json", ("list"))[0]
   except Exception as _error:
     print("getTempList Error", _error)
     return list()
 
 def setEventStatus(status, gId):
-  db = cli[DB_NAME]['event']
+  #db = cli[DB_NAME]['event']
   try:
     if status == True:
-      db.update_one({"_id": gId}, {'$set':{"is_active": status, "list": list()}}, True)
+      #db.update_one({"_id": gId}, {'$set':{"is_active": status, "list": list()}}, True)
+      parser.update_file(f"{SYS}/event/{gId}.json", {'id': gId, 'is_active': status})
     else:
-      db.update_one({"_id": gId}, {'$set':{"is_active": status}}, True)
+      #db.update_one({"_id": gId}, {'$set':{"is_active": status}}, True)
+      #parser.update_file(f"{SYS}/{gId}.json", {'id': gId, 'is_active': status})
+      parser.delete_file(f"{SYS}/event/{gId}.json")
   except Exception as error:
     return error
 
 def getEventStatus(gId):
-  db = cli[DB_NAME]['event']
+  #db = cli[DB_NAME]['event']
   try:
-    status = db.find({"_id": gId})
-    return status[0]['is_active']
+    #status = db.find({"_id": gId})
+    #return status[0]['is_active']
+    return parser.get_data(f"{SYS}/event/{gId}.json", ("is_active"))[0]
   except Exception as _error:
-    db.insert_one({"_id": gId, "is_active": False})
+    #db.insert_one({"_id": gId, "is_active": False})
     return False
 
 #Raffle!
 def setRaffleMax(gId, part):
-  db = cli[DB_NAME]['raffle']
+  #db = cli[DB_NAME]['raffle']
   try:
-    db.insert_one({"_id": gId, "is_raffle": True, "max": part, 'cont': list()})
+    #db.insert_one({"_id": gId, "is_raffle": True, "max": part, 'cont': list()})
+    parser.update_file(f"{SYS}/raffle/{gId}.json", {'id': gId, 'is_raffle': True, 'cont': []})
   except Exception as _error:
     return _error
 
 def setRaffle(gId, cont):
-  db = cli[DB_NAME]['raffle']
+  #db = cli[DB_NAME]['raffle']
   try:
-    db.update_one({'_id': gId}, {'$set':{'cont': cont}})
+    #db.update_one({'_id': gId}, {'$set':{'cont': cont}})
+    parser.update_file(f"{SYS}/raffle/{gId}", {'cont': cont})
   except Exception as _error:
     return _error
 
 def getRaffleCont(gId):
-  db = cli[DB_NAME]['raffle']
-  data = db.find({'_id': gId})
-  return data[0]['cont']
+  #db = cli[DB_NAME]['raffle']
+  #data = db.find({'_id': gId})
+  #return data[0]['cont']
+  return parser.get_data(f"{SYS}/raffle/{gId}.json", ("cont"))[0]
 
 def getRaffle(gId):
-  db = cli[DB_NAME]['raffle']
-  data = db.find({'_id': gId})
-  dataSet = {
-    'max': data[0]['max'],
-    'cont': data[0]['cont']
-    }
+  #db = cli[DB_NAME]['raffle']
+  #data = db.find({'_id': gId})
   
-  db.delete_one({'_id': gId})
+  dataSet = parser.get_data(f"{SYS}/raffle/{gId}.json", ('max', 'cont'), True)
+  #{
+  #  'max': data[0]['max'],
+  #  'cont': data[0]['cont']
+  #  }
+  
+  #db.delete_one({'_id': gId})
+  parser.delete_file(f"{SYS}/raffle/{gId}.json")
 
   return dataSet
 
 def getIsRaffle(gId):
-  db = cli[DB_NAME]['raffle']
+  #db = cli[DB_NAME]['raffle']
   try:
-    data = db.find({'_id': gId})
-    return data[0]['is_raffle']
+    #data = db.find({'_id': gId})
+    #return data[0]['is_raffle']
+    return parser.get_data(f"{SYS}/raffle/{gId}.json", ('is_raffle'))[0]
   except:
     return False
 
