@@ -111,32 +111,51 @@ def startEvent(update, context):
     update.message.reply_text(text="Lo siento, esta acción solo está permitida en grupos")
 
 def finishEvent(update, context):
-  if not fh.getEventStatus(update.effective_chat.id):
-    context.bot.send_message(
-      chat_id = update.effective_chat.id,
-      text = "No hay eventos activos"
-    )
-  else:
-    CONT = fh.getTempList(update.effective_chat.id)
-    x = rh.doAssignments(CONT)
-    if x == 'nil':
+  group_id = update.effective_chat.id
+  if id < 0:
+    userid = update.effective_user.id
+    admins = context.bot.get_chat_administrators(id)
+    admId = list()
+    for adm in admins:
+      admId.append(adm.user.id)
+    if not admId.__contains__(userid):
+      context.bot.send_chat_action(id, "typing")
       update.message.reply_text(
-        text = "No hay suficientes participantes, deben haber al menos 3"
+        text = "Lo siento, debes ser administrador para finalizar eventos"
+      )
+  else:
+    if not fh.getEventStatus(group_id):
+      LOGGER.info(f"Chat: {group_id} has not event")
+      context.bot.send_message(
+        chat_id = group_id,
+        text = "No hay eventos activos"
       )
     else:
-      CURRENT_GROUP = update.effective_chat.id
-      for i in x:
-        userid = i[0][0]
-        currentuser = i[0][1]
-        username = i [1][1]
-        try:
-          context.bot.send_message(userid,
-                                    f'Hola {currentuser} su amigo secreto del evento es: {username}\nRecuerde, debe mantener el secreto hasta el día de entrega'
-                                  )
-        except Exception as e:
-          LOGGER.info(e)
-      context.bot.send_message(CURRENT_GROUP, 'Todos los concursantes han recibido sus instrucciones, recuerden divertirse\n#CLOCKWORK_EVENT')
-      fh.setEventStatus(False, update.effective_chat.id)
+      LOGGER.info(f"Doing assignments")
+      CONT = fh.getTempList(group_id)
+      x = rh.doAssignments(CONT)
+      if x == 'nil':
+        LOGGER.warn(f"There's no enough participants")
+        update.message.reply_text(
+          text = "No hay suficientes participantes, deben haber al menos 3\n<b>Nota</b>: <i>si desea cancelar el evento utilice</i> <b>/cancel_event</b>",
+          parse_mode = 'HTML'
+        )
+        LOGGER.info("Assignments done!")
+      else:
+        LOGGER.info(f"{group_id} - Delivering")
+        for i in x:
+          userid = i[0][0]
+          currentuser = i[0][1]
+          username = i [1][1]
+          try:
+            context.bot.send_message(userid,
+                                      f'Hola {currentuser} su amigo secreto del evento es: {username}\nRecuerde, debe mantener el secreto hasta el día de entrega'
+                                    )
+          except Exception as e:
+            LOGGER.error(f"{group_id} - {e}")
+        context.bot.send_message(group_id, 'Todos los concursantes han recibido sus instrucciones, recuerden divertirse\n#CLOCKWORK_EVENT')
+        LOGGER.info(f"{group_id} - Delivered")
+        fh.setEventStatus(False, group_id)
 
 def counter(update, context):
   query = update.callback_query
@@ -173,9 +192,7 @@ def raffle(update, context):
   gId = update.effective_chat.id
   is_raffle = fh.getIsRaffle(gId)
 
-  update.message.reply_text("Lo siento, esta función se encuentra en desarrollo")
-  
-  '''if not is_raffle:
+  if not is_raffle:
     try:
       arg = context.args
       if len(arg) > 1:
@@ -184,16 +201,20 @@ def raffle(update, context):
           arg.pop(-1)
           text = " ".join(arg)
         except Exception as _error:
-          pass
+          LOGGER.info("No places were given")
+      elif len(arg) == 0:
+        context.bot.send_chat_action(gId, "typing")
+        update.message.reply_text(text = "Necesito un tema de sorteo")
       else:
+        places = 3
         text = arg[0]
       
       button = InlineKeyboardButton(
-              text = words.EVENT[LANG + "_btn"], #TODO
+              text = words.EVENT[LANG + "_btn"],
               callback_data = 'raffle_join',
             )
       
-      context.bot.send_chat_action(update.effective_chat.id, "typing")
+      context.bot.send_chat_action(gId, "typing")
       context.bot.send_message(
         chat_id = gId,
         parse_mode = 'HTML',
@@ -203,13 +224,13 @@ def raffle(update, context):
               ])
       )
       
-      fh.setRaffleMax(gId, places)
+      fh.setRaffleMax(gId, update.effective_user.id, places)
 
       context.bot.delete_message(gId, deleted)
     except Exception as _error:
-      pass
+      LOGGER.error(_error)
   else:
-    context.bot.send_message(gId, "Ya hay un sorteo activo")'''
+    context.bot.send_message(gId, "Ya hay un sorteo activo")
 
 def raffle_join(update, context):
   query = update.callback_query
@@ -237,36 +258,33 @@ def raffle_join(update, context):
       fh.setRaffle(gId, CONT)
     except Exception as ex:
       LOGGER.info(ex)
-    finally:
-      print("Contestants", fh.getTempList(gId))
   else:
     query.answer('Ya estás en el evento')
   
 def end_raffle(update, context):
   gId = update.effective_chat.id
   deleted = update.message.message_id
-
-  update.message.reply_text("Lo siento, esta función se encuentra en desarrollo")
-  '''try:
+  
+  try:
     context.bot.delete_message(gId, deleted)
   except Exception as _error:
-    pass
+    LOGGER.error(_error)
   finally:
     raffle = fh.getRaffle(gId)
+    LOGGER.debug(f"Cont: {raffle}")
     winners = rh.raffle(raffle['cont'], raffle['max'])
+    LOGGER.debug(f"Winners: {winners}")
 
-    text = "Los ganadores son:\n<hr>\n<ul>"
+    text = "Los ganadores son:\n"
 
     for x in winners:
-      text += f"\n<li>{x[1]}</li>"
-    
-    text += "</ul>"
+      text += f"\n\t· {x[1]}"
 
     context.bot.send_message(
       chat_id = gId,
       parse_mode = 'HTML',
       text = text
-    )'''
+    )
 
 #Language Options
 def changeLang(update, context):
@@ -302,14 +320,31 @@ def esp(update, context):
   LANG = 'es'
   print(LANG)
 
-#PING
-def ping(update, context):
-  if len(context.args) == 0:
-    x = fh.pingMongo(update.effective_chat.id, "nil")
+#Canellations
+def abort_raffle(update, context):
+  try:
+    if not fh.cancel(update.effective_chat.id, "raffle", update.effective_user.id):
+      update.message.reply_text(text = "Lo siento, solo el autor del sorteo puede cancelarlo")
+    else:
+      update.message.reply_text(text = "Sorteo cancelado")
+  except Exception as _error:
+    LOGGER.error(_error)
+
+def abort_event(update, context):
+  id = update.effecive_chat.id
+  if id < 0:
+    userid = update.effective_user.id
+    admins = context.bot.get_chat_administrators(id)
+    admId = list()
+    for adm in admins:
+      admId.append(adm.user.id)
+    if not admId.__contains__(userid):
+      context.bot.send_chat_action(id, "typing")
+      update.message.reply_text(
+        text = "Lo siento, debes ser administrador para cancelar eventos"
+      )
   else:
-    x = fh.pingMongo(update.effective_chat.id, " ".join(context.args))
-  update.message.reply_text(text = x)
-  print(fh.getTempList(update.effective_chat.id))
+    fh.cancel(id, "event")
 
 #Start Bot
 if __name__ == "__main__":
@@ -333,7 +368,8 @@ if __name__ == "__main__":
         CommandHandler('new_raffle', raffle),
         CommandHandler('finish_raffle', end_raffle),
         CommandHandler('language', changeLang),
-        CommandHandler('ping', ping),
+        CommandHandler('cancel_raffle', abort_raffle),
+        CommandHandler('cancel_event', abort_event),
         #CALLBACKS
         CallbackQueryHandler(pattern='im_in', callback=counter),
         CallbackQueryHandler(pattern='raffle_join', callback=raffle_join),

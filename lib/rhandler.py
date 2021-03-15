@@ -73,17 +73,18 @@ def doAssignments(cont):
     else:
         return "nil"
 
-def raffle(cont, max = 3):
-    if not len(cont) <= max:
+def raffle(cont, _max = 3):
+    if len(cont) <= _max:
         return cont
     else:
         scCont = scramble(cont)
         finale = list()
         counter = 0
         random = 0
-        while counter < max:
+        while counter < _max:
             tRand = rd.randint(0, len(cont) - 1)
             if not tRand == random:
                 finale.append(scCont[tRand])
                 random = tRand
+                counter += 1
         return finale
