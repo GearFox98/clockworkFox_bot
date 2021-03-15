@@ -95,7 +95,7 @@ def getRaffle(gId):
   #  }
   
   #db.delete_one({'_id': gId})
-  parser.delete_file(f"{SYS}/raffle/{gId}.json")
+  parser.delete_data(f"{SYS}/raffle/{gId}.json")
 
   return dataSet
 
