@@ -333,12 +333,14 @@ def abort_raffle(update, context):
 def abort_event(update, context):
   try:
     gId = update.effecive_chat.id
+    context.bot.send_message(gId, f"Id de chat: {gId}")
     if gId < 0:
       userid = update.effective_user.id
       admins = context.bot.get_chat_administrators(gId)
       admId = list()
       for adm in admins:
         admId.append(adm.user.id)
+      context.bot.send_message(gId, f"Admins de chat: {admins}")
       if not admId.__contains__(userid):
         context.bot.send_chat_action(gId, "typing")
         update.message.reply_text(
