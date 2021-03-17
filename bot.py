@@ -383,12 +383,12 @@ if __name__ == "__main__":
       fallbacks=[]
   ))
 
-  updater.start_webhook(listen="0.0.0.0",
+  '''updater.start_webhook(listen="0.0.0.0",
                         port=PORT,
                         url_path=TOKEN)
   updater.bot.set_webhook("https://clockworkfox-bot.herokuapp.com/" + TOKEN)
-  updater.idle()
-
-'''  #Debug Purposes
-  updater.start_polling()
   updater.idle()'''
+
+  #Debug Purposes
+  updater.start_polling()
+  updater.idle()

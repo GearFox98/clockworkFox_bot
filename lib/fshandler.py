@@ -14,7 +14,7 @@ SYS = "sys"
 LOG = "logs/log_"
 DB_NAME = "clockworkfox-bot"
 PASSWORD = os.environ['MONGO']
-CLIENT = "mongodb+srv://clockwork:"+PASSWORD+"@clockworkfox-telegram-b.5eqt8.mongodb.net/clockworkfox-bot?retryWrites=true&w=majority"
+CLIENT = f"mongodb+srv://clockwork:{PASSWORD}@clockworkfox-telegram-b.5eqt8.mongodb.net/clockworkfox-bot?retryWrites=true&w=majority"
 
 cli = pymongo.MongoClient(CLIENT)
 
