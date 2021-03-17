@@ -103,8 +103,11 @@ def getIsRaffle(gId):
 #Cancel
 def cancel(gId, type_event, *user):
   if type_event == "event":
-    db = cli[DB_NAME]['event']
-    db.delete_one({"_id": gId})
+    try:
+      db = cli[DB_NAME]['event']
+      db.delete_one({"_id": gId})
+    except Exception as error:
+      return error
   elif type_event == "raffle":
     db = cli[DB_NAME]['raffle']
     author = db.find({"_id": gId})[0]['author']
