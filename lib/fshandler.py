@@ -48,8 +48,8 @@ def setEventStatus(status, gId):
     if status == True:
       db.update_one({"_id": gId}, {'$set':{"is_active": status, "list": list()}}, True)
     else:
-      db.update_one({"_id": gId}, {'$set':{"is_active": status}}, True)
-      #db.delete_one({"_id": gId})
+      #db.update_one({"_id": gId}, {'$set':{"is_active": status}}, True)
+      db.delete_one({"_id": gId})
   except Exception as error:
     return error
 
@@ -103,7 +103,8 @@ def getIsRaffle(gId):
 #Cancel
 def cancel(gId, type_event, *user):
   if type_event == "event":
-    setEventStatus(False, gId)
+    db = cli[DB_NAME]['event']
+    db.delete_one({"_id": gId})
   elif type_event == "raffle":
     db = cli[DB_NAME]['raffle']
     author = db.find({"_id": gId})[0]['author']

@@ -344,6 +344,10 @@ def abort_event(update, context):
         text = "Lo siento, debes ser administrador para cancelar eventos"
       )
   else:
+    context.bot.send_chat_action(id, "typing")
+    update.message.reply_text(
+      text = "Evento cancelado"
+    )
     fh.cancel(id, "event")
 
 #Start Bot
