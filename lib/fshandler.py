@@ -101,21 +101,21 @@ def getIsRaffle(gId):
     return False
 
 #Cancel
-def cancel(gId, type_event, *user):
-  if type_event == "event":
-    try:
+def cancelRaff(gId, user):
+  db = cli[DB_NAME]['raffle']
+  author = db.find({"_id": gId})[0]['author']
+  if user[0] == author:
+    db.delete_one({'_id': gId})
+    return True
+  else:
+    return False
+
+def cancelEv(gId):
+  try:
       db = cli[DB_NAME]['event']
       db.delete_one({"_id": gId})
-    except Exception as error:
-      return error
-  elif type_event == "raffle":
-    db = cli[DB_NAME]['raffle']
-    author = db.find({"_id": gId})[0]['author']
-    if user[0] == author:
-      db.delete_one({'_id': gId})
-      return True
-    else:
-      return False
+  except Exception as error:
+    return error
 
 def getToken():
     return os.environ['TOKEN']

@@ -179,7 +179,7 @@ def counter(update, context):
     try:
       CONT.append(x)
       query.answer('¡Listo!')
-      context.bot.send_message(gId, '{} se ha unido al evento!'.format(userfname))
+      context.bot.send_message(gId, f'{userfname} se ha unido al evento!')
       fh.setEventList(gId, CONT)
     except Exception as ex:
       LOGGER.info(ex)
@@ -323,7 +323,7 @@ def esp(update, context):
 #Canellations
 def abort_raffle(update, context):
   try:
-    if not fh.cancel(update.effective_chat.id, "raffle", update.effective_user.id):
+    if not fh.cancelRaff(update.effective_chat.id, update.effective_user.id):
       update.message.reply_text(text = "Lo siento, solo el autor del sorteo puede cancelarlo")
     else:
       update.message.reply_text(text = "Sorteo cancelado")
@@ -331,24 +331,27 @@ def abort_raffle(update, context):
     LOGGER.error(_error)
 
 def abort_event(update, context):
-  id = update.effecive_chat.id
-  if id < 0:
-    userid = update.effective_user.id
-    admins = context.bot.get_chat_administrators(id)
-    admId = list()
-    for adm in admins:
-      admId.append(adm.user.id)
-    if not admId.__contains__(userid):
-      context.bot.send_chat_action(id, "typing")
-      update.message.reply_text(
-        text = "Lo siento, debes ser administrador para cancelar eventos"
-      )
-    else:
-      context.bot.send_chat_action(id, "typing")
-      update.message.reply_text(
-        text = "Evento cancelado"
-      )
-      fh.cancel(id, "event")
+  try:
+    gId = update.effecive_chat.id
+    if gId < 0:
+      userid = update.effective_user.id
+      admins = context.bot.get_chat_administrators(gId)
+      admId = list()
+      for adm in admins:
+        admId.append(adm.user.id)
+      if not admId.__contains__(userid):
+        context.bot.send_chat_action(gId, "typing")
+        update.message.reply_text(
+          text = "Lo siento, debes ser administrador para cancelar eventos"
+        )
+      else:
+        context.bot.send_chat_action(gId, "typing")
+        update.message.reply_text(
+          text = "Evento cancelado"
+        )
+        fh.cancelEv(gId)
+  except Exception as error:
+    context.bot.send_message(gId, str(error))
 
 #Start Bot
 if __name__ == "__main__":
