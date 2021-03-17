@@ -6,7 +6,6 @@ FileSystem Handler
 
 import logging
 import pymongo
-import dataparser.parser as parser
 import os.path as ph
 import os
 
@@ -49,8 +48,8 @@ def setEventStatus(status, gId):
     if status == True:
       db.update_one({"_id": gId}, {'$set':{"is_active": status, "list": list()}}, True)
     else:
-      #db.update_one({"_id": gId}, {'$set':{"is_active": status}}, True)
-      db.delete_one({"_id": gId})
+      db.update_one({"_id": gId}, {'$set':{"is_active": status}}, True)
+      #db.delete_one({"_id": gId})
   except Exception as error:
     return error
 
