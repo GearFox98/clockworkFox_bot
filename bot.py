@@ -376,9 +376,9 @@ if __name__ == "__main__":
         CommandHandler('help', helpPrint),
         CommandHandler('new_raffle', raffle),
         CommandHandler('finish_raffle', end_raffle),
-        CommandHandler('language', changeLang),
+        #CommandHandler('language', changeLang), TODO
         CommandHandler('cancel_raffle', abort_raffle),
-        CommandHandler('cancel_event', abort_event),
+        CommandHandler('abort_event', abort_event),
         #CALLBACKS
         CallbackQueryHandler(pattern='im_in', callback=counter),
         CallbackQueryHandler(pattern='raffle_join', callback=raffle_join),
