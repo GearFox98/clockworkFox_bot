@@ -112,50 +112,53 @@ def startEvent(update, context):
 
 def finishEvent(update, context):
   group_id = update.effective_chat.id
+  LOGGER.info(f"Effective: {group_id} is finishing event")
   if group_id < 0:
     userid = update.effective_user.id
+    LOGGER.info(f"User: {userid} triggered")
     admins = context.bot.get_chat_administrators(group_id)
     admId = list()
     for adm in admins:
       admId.append(adm.user.id)
     if not admId.__contains__(userid):
+      LOGGER.warning(f"User {userid} is not an admin")
       context.bot.send_chat_action(group_id, "typing")
       update.message.reply_text(
         text = "Lo siento, debes ser administrador para finalizar eventos"
       )
-  else:
-    if not fh.getEventStatus(group_id):
-      LOGGER.info(f"Chat: {group_id} has not event")
-      context.bot.send_message(
-        chat_id = group_id,
-        text = "No hay eventos activos"
-      )
     else:
-      LOGGER.info(f"Doing assignments")
-      CONT = fh.getTempList(group_id)
-      x = rh.doAssignments(CONT)
-      if x == 'nil':
-        LOGGER.warn(f"There's no enough participants")
-        update.message.reply_text(
-          text = "No hay suficientes participantes, deben haber al menos 3\n<b>Nota</b>: <i>si desea cancelar el evento utilice</i> <b>/cancel_event</b>",
-          parse_mode = 'HTML'
+      if not fh.getEventStatus(group_id):
+        LOGGER.info(f"Chat: {group_id} has not event")
+        context.bot.send_message(
+          chat_id = group_id,
+          text = "No hay eventos activos"
         )
-        LOGGER.info("Assignments done!")
       else:
-        LOGGER.info(f"{group_id} - Delivering")
-        for i in x:
-          userid = i[0][0]
-          currentuser = i[0][1]
-          username = i [1][1]
-          try:
-            context.bot.send_message(userid,
-                                      f'Hola {currentuser} su amigo secreto del evento es: {username}\nRecuerde, debe mantener el secreto hasta el día de entrega'
-                                    )
-          except Exception as e:
-            LOGGER.error(f"{group_id} - {e}")
-        context.bot.send_message(group_id, 'Todos los concursantes han recibido sus instrucciones, recuerden divertirse\n#CLOCKWORK_EVENT')
-        LOGGER.info(f"{group_id} - Delivered")
-        fh.setEventStatus(False, group_id)
+        LOGGER.info(f"Doing assignments")
+        CONT = fh.getTempList(group_id)
+        x = rh.doAssignments(CONT)
+        if x == 'nil':
+          LOGGER.warn(f"There's no enough participants")
+          update.message.reply_text(
+            text = "No hay suficientes participantes, deben haber al menos 3\n<b>Nota</b>: <i>si desea cancelar el evento utilice</i> <b>/cancel_event</b>",
+            parse_mode = 'HTML'
+          )
+          LOGGER.info("Assignments done!")
+        else:
+          LOGGER.info(f"{group_id} - Delivering")
+          for i in x:
+            userid = i[0][0]
+            currentuser = i[0][1]
+            username = i [1][1]
+            try:
+              context.bot.send_message(userid,
+                                        f'Hola {currentuser} su amigo secreto del evento es: {username}\nRecuerde, debe mantener el secreto hasta el día de entrega'
+                                      )
+            except Exception as e:
+              LOGGER.error(f"{group_id} - {e}")
+          context.bot.send_message(group_id, 'Todos los concursantes han recibido sus instrucciones, recuerden divertirse\n#CLOCKWORK_EVENT')
+          LOGGER.info(f"{group_id} - Delivered")
+          fh.setEventStatus(False, group_id)
 
 def counter(update, context):
   query = update.callback_query
@@ -256,8 +259,13 @@ def raffle_join(update, context):
       CONT.append(x)
       query.answer('¡Listo!')
       fh.setRaffle(gId, CONT)
+      context.bot.send_message(
+        id = fh.getAuthor(gId),
+        parse_mode = 'HTML',
+        text = f"{words.NOTIFICATION[LANG]} {len(CONT)}"
+        )
     except Exception as ex:
-      LOGGER.info(ex)
+      LOGGER.error(ex)
   else:
     query.answer('Ya estás en el evento')
   
@@ -320,8 +328,8 @@ def esp(update, context):
   LANG = 'es'
   print(LANG)
 
-#Canellations
-def abort_raffle(update, context):
+#Cancellations
+def cancel_raffle(update, context):
   try:
     if not fh.cancelRaff(update.effective_chat.id, update.effective_user.id):
       update.message.reply_text(text = "Lo siento, solo el autor del sorteo puede cancelarlo")
@@ -330,8 +338,8 @@ def abort_raffle(update, context):
   except Exception as _error:
     LOGGER.error(_error)
 
-def abort_event(update, context):
-  gId = update.effecive_chat.id
+def cancel_event(update, context):
+  gId = update.effective_chat.id
   try:
     LOGGER.info(f"Id de chat: {gId}")
     if gId < 0:
@@ -340,7 +348,6 @@ def abort_event(update, context):
       admId = list()
       for adm in admins:
         admId.append(adm.user.id)
-      context.bot.send_message(gId, f"Admins de chat: {admins}")
       if not admId.__contains__(userid):
         context.bot.send_chat_action(gId, "typing")
         update.message.reply_text(
@@ -354,6 +361,8 @@ def abort_event(update, context):
         fh.cancelEv(gId)
   except Exception as error:
     context.bot.send_message(gId, str(error))
+
+
 
 #Start Bot
 if __name__ == "__main__":
@@ -376,8 +385,8 @@ if __name__ == "__main__":
         CommandHandler('new_raffle', raffle),
         CommandHandler('finish_raffle', end_raffle),
         #CommandHandler('language', changeLang), TODO
-        CommandHandler('cancel_raffle', abort_raffle),
-        CommandHandler('cancel', abort_event),
+        CommandHandler('cancel_raffle', cancel_raffle),
+        CommandHandler('cancel_event', cancel_event),
         #CALLBACKS
         CallbackQueryHandler(pattern='im_in', callback=counter),
         CallbackQueryHandler(pattern='raffle_join', callback=raffle_join),
@@ -391,12 +400,9 @@ if __name__ == "__main__":
       fallbacks=[]
   ))
 
-  '''updater.start_webhook(listen="0.0.0.0",
+
+  updater.start_webhook(listen="0.0.0.0",
                         port=PORT,
                         url_path=TOKEN)
   updater.bot.set_webhook("https://clockworkfox-bot.herokuapp.com/" + TOKEN)
-  updater.idle()'''
-
-  #Debug Purposes
-  updater.start_polling()
   updater.idle()

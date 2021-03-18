@@ -76,6 +76,14 @@ def setRaffle(gId, cont):
   except Exception as _error:
     return _error
 
+def getAuthor(gId):
+  db = cli[DB_NAME]['raffle']
+  try:
+    author = db.find({"_id": gId})[0]['author']
+    return author
+  except Exception as error:
+    LOGGER.error(error)
+
 def getRaffleCont(gId):
   db = cli[DB_NAME]['raffle']
   status = db.find({"_id": gId})
@@ -104,7 +112,7 @@ def getIsRaffle(gId):
 def cancelRaff(gId, user):
   db = cli[DB_NAME]['raffle']
   author = db.find({"_id": gId})[0]['author']
-  if user[0] == author:
+  if user == author:
     db.delete_one({'_id': gId})
     return True
   else:
