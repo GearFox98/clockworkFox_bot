@@ -43,7 +43,7 @@ HELP = {
 <b>/new_event <i>"texto del evento"</i></b> - Iniciaré un evento, solo se permite un evento por grupo a la vez.
 <b>/new_raffle <i>"texto del sorteo" "número de participantes"</i></b> - Iniciaré un sorteo.
 
-<b>NOTA</b>: si quieres cancelar alguno de estos puedes usar el comando <b><i>/cancel_event</i></b> o <b><i>/cancel_raffle</i>/b>'''
+<b>NOTA</b>: si quieres cancelar alguno de estos puedes usar el comando <b><i>/cancel_event</i></b> o <b><i>/cancel_raffle</i></b>'''
 #Con el comando /language podrás cambiar mi idioma'''
 }
 
