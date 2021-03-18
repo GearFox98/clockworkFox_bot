@@ -23,7 +23,7 @@ PORT = int(os.environ.get('PORT', '8443'))
 #LOGGER
 logging.basicConfig(
   level = logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s,"
-)
+  )
 LOGGER = logging.getLogger()
 
 LANG = 'es'
@@ -260,7 +260,7 @@ def raffle_join(update, context):
       query.answer('¡Listo!')
       fh.setRaffle(gId, CONT)
       context.bot.send_message(
-        id = fh.getAuthor(gId),
+        chat_id = fh.getAuthor(gId),
         parse_mode = 'HTML',
         text = f"{words.NOTIFICATION[LANG]} {len(CONT)}"
         )
