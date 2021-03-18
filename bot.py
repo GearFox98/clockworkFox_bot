@@ -112,14 +112,14 @@ def startEvent(update, context):
 
 def finishEvent(update, context):
   group_id = update.effective_chat.id
-  if id < 0:
+  if group_id < 0:
     userid = update.effective_user.id
-    admins = context.bot.get_chat_administrators(id)
+    admins = context.bot.get_chat_administrators(group_id)
     admId = list()
     for adm in admins:
       admId.append(adm.user.id)
     if not admId.__contains__(userid):
-      context.bot.send_chat_action(id, "typing")
+      context.bot.send_chat_action(group_id, "typing")
       update.message.reply_text(
         text = "Lo siento, debes ser administrador para finalizar eventos"
       )
@@ -286,7 +286,7 @@ def end_raffle(update, context):
       text = text
     )
 
-#Language Options
+#Language Options TODO
 def changeLang(update, context):
   en = InlineKeyboardButton(
     text = 'English',
@@ -331,9 +331,9 @@ def abort_raffle(update, context):
     LOGGER.error(_error)
 
 def abort_event(update, context):
+  gId = update.effecive_chat.id
   try:
-    gId = update.effecive_chat.id
-    context.bot.send_message(gId, f"Id de chat: {gId}")
+    LOGGER.info(f"Id de chat: {gId}")
     if gId < 0:
       userid = update.effective_user.id
       admins = context.bot.get_chat_administrators(gId)
@@ -364,13 +364,12 @@ if __name__ == "__main__":
 
   dp = updater.dispatcher
   
-  dp.add_handler(CommandHandler('start', start))
-  
   dp.add_handler(MessageHandler(Filters.status_update.new_chat_members, welcoming))
 
   dp.add_handler(ConversationHandler(
       entry_points=[
         #COMMANDS
+        CommandHandler('start', start),
         CommandHandler('new_event', startEvent),
         CommandHandler('finish_event', finishEvent),
         CommandHandler('help', helpPrint),
@@ -378,7 +377,7 @@ if __name__ == "__main__":
         CommandHandler('finish_raffle', end_raffle),
         #CommandHandler('language', changeLang), TODO
         CommandHandler('cancel_raffle', abort_raffle),
-        CommandHandler('abort_event', abort_event),
+        CommandHandler('cancel', abort_event),
         #CALLBACKS
         CallbackQueryHandler(pattern='im_in', callback=counter),
         CallbackQueryHandler(pattern='raffle_join', callback=raffle_join),
@@ -392,12 +391,12 @@ if __name__ == "__main__":
       fallbacks=[]
   ))
 
-  updater.start_webhook(listen="0.0.0.0",
+  '''updater.start_webhook(listen="0.0.0.0",
                         port=PORT,
                         url_path=TOKEN)
   updater.bot.set_webhook("https://clockworkfox-bot.herokuapp.com/" + TOKEN)
-  updater.idle()
-
-  '''#Debug Purposes
-  updater.start_polling()
   updater.idle()'''
+
+  #Debug Purposes
+  updater.start_polling()
+  updater.idle()
