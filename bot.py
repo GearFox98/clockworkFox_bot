@@ -405,4 +405,5 @@ if __name__ == "__main__":
                         port=PORT,
                         url_path=TOKEN)
   updater.bot.set_webhook("https://clockworkfox-bot.herokuapp.com/" + TOKEN)
-  updater.idle()
+  
+  #updater.idle()
