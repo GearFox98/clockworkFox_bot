@@ -6,8 +6,5 @@ A telegram bot for "Secret friends" event, raffles and welcomings!
 
 - Welcoming
 - Secret friends event
-
-## Still in development
-
 - Raffles
-- Database (affects Secret friend and Raffles too)
+
