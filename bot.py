@@ -131,7 +131,7 @@ def finishEvent(update, context):
         LOGGER.info(f"Chat: {group_id} has not event")
         context.bot.send_message(
           chat_id = group_id,
-          text = "No hay eventos activos"
+          text = "No hay eventos activos, para iniciar uno utiliza \\new_event."
         )
       else:
         LOGGER.info(f"Doing assignments")
@@ -176,13 +176,14 @@ def counter(update, context):
   is_there = False
   for temp in CONT:
     if temp[0] == userid:
+    
       is_there = True
   
   if not is_there:
     try:
       CONT.append(x)
-      query.answer('¡Listo!')
-      context.bot.send_message(gId, f'{userfname} se ha unido al evento!')
+      query.answer('¡Listo!\nRecuerda iniciarme en privado si no lo has hecho.')
+      context.bot.send_message(gId, f"{userfname} se ha unido al evento!")
       fh.setEventList(gId, CONT)
     except Exception as ex:
       LOGGER.info(ex)

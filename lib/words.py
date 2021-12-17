@@ -34,14 +34,14 @@ HELP = {
   'en' : '''Here\'s some help
 
 <b>/new_event <i>"event text"</i></b> - I'll start a new event, there's only allowed one event at time.
-<b>/new_raffle <i>"texto del sorteo" "número de participantes"</i></b> - I\'ll start a raffle.
+<b>/new_raffle <i>"raffle text" "number of winners"</i></b> - I\'ll start a raffle.
 
 <b>NOTE</b>: if you want to cancel any of this you can use the <b><i>/cancel_event</i>/b> or <b><i>/cancel_raffle</i>/b>''',
 #With the command /language you\'ll be able to change my language''',
   'es' : '''Acá un poco de ayuda
 
 <b>/new_event <i>"texto del evento"</i></b> - Iniciaré un evento, solo se permite un evento por grupo a la vez.
-<b>/new_raffle <i>"texto del sorteo" "número de participantes"</i></b> - Iniciaré un sorteo.
+<b>/new_raffle <i>"texto del sorteo" "cantidad de ganadores"</i></b> - Iniciaré un sorteo.
 
 <b>NOTA</b>: si quieres cancelar alguno de estos puedes usar el comando <b><i>/cancel_event</i></b> o <b><i>/cancel_raffle</i></b>'''
 #Con el comando /language podrás cambiar mi idioma'''
