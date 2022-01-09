@@ -20,6 +20,9 @@ import lib.words as words
 #Server
 PORT = int(os.environ.get('PORT', '8443'))
 
+#Token
+TOKEN = os.environ['TOKEN']
+
 #LOGGER
 logging.basicConfig(
   level = logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s,"
@@ -27,7 +30,6 @@ logging.basicConfig(
 LOGGER = logging.getLogger()
 
 LANG = 'es'
-TOKEN = os.environ['TOKEN']
 
 def start(update, context):
   LOGGER.info(f"User: {update.effective_user['username']}, Chat status: started")
