@@ -27,7 +27,8 @@ logging.basicConfig(
 LOGGER = logging.getLogger()
 
 LANG = 'es'
-TOKEN = fh.getToken()
+#TOKEN = os.environ['TOKEN']
+TOKEN = '5054914576:AAEu06B-g64rGnErMSIV6JU4wdUWCpIgHBk' #TOKEN Testing Bot
 
 def start(update, context):
   LOGGER.info(f"User: {update.effective_user['username']}, Chat status: started")
@@ -60,7 +61,7 @@ def helpPrint(update, context):
     )
 
 #Events
-def startEvent(update, context):
+def secretFriendStart(update, context):
   id = update.effective_chat.id
   if id < 0:
     userid = update.effective_user.id
@@ -110,7 +111,7 @@ def startEvent(update, context):
   else:
     update.message.reply_text(text="Lo siento, esta acción solo está permitida en grupos")
 
-def finishEvent(update, context):
+def secretFriendEnd(update, context):
   group_id = update.effective_chat.id
   LOGGER.info(f"Effective: {group_id} is finishing event")
   if group_id < 0:
@@ -140,7 +141,7 @@ def finishEvent(update, context):
         if x == 'nil':
           LOGGER.warn(f"There's no enough participants")
           update.message.reply_text(
-            text = "No hay suficientes participantes, deben haber al menos 3\n<b>Nota</b>: <i>si desea cancelar el evento utilice</i> <b>/cancel_event</b>",
+            text = "No hay suficientes participantes, deben haber al menos 3\n<b>Nota</b>: <i>si desea cancelar el evento utilice</i> <b>/cancel_sfriend</b>",
             parse_mode = 'HTML'
           )
           LOGGER.info("Assignments done!")
@@ -339,7 +340,7 @@ def cancel_raffle(update, context):
   except Exception as _error:
     LOGGER.error(_error)
 
-def cancel_event(update, context):
+def cancel_sfriend(update, context):
   gId = update.effective_chat.id
   try:
     LOGGER.info(f"Id de chat: {gId}")
@@ -380,14 +381,14 @@ if __name__ == "__main__":
       entry_points=[
         #COMMANDS
         CommandHandler('start', start),
-        CommandHandler('new_event', startEvent),
-        CommandHandler('finish_event', finishEvent),
+        CommandHandler('new_sfriend', secretFriendStart),
+        CommandHandler('finish_sfriend', secretFriendEnd),
         CommandHandler('help', helpPrint),
         CommandHandler('new_raffle', raffle),
         CommandHandler('finish_raffle', end_raffle),
         #CommandHandler('language', changeLang), TODO
         CommandHandler('cancel_raffle', cancel_raffle),
-        CommandHandler('cancel_event', cancel_event),
+        CommandHandler('cancel_sfriend', cancel_sfriend),
         #CALLBACKS
         CallbackQueryHandler(pattern='im_in', callback=counter),
         CallbackQueryHandler(pattern='raffle_join', callback=raffle_join),
@@ -402,9 +403,10 @@ if __name__ == "__main__":
   ))
 
 
-  updater.start_webhook(listen="0.0.0.0",
+  '''updater.start_webhook(listen="0.0.0.0",
                         port=PORT,
                         url_path=TOKEN)
-  updater.bot.set_webhook("https://clockworkfox-bot.herokuapp.com/" + TOKEN)
+  updater.bot.set_webhook("https://clockworkfox-bot.herokuapp.com/" + TOKEN)'''
   
-  #updater.idle()
+  updater.start_polling()
+  updater.idle()

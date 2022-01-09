@@ -12,7 +12,8 @@ import os
 SYS = "sys"
 LOG = "logs/log_"
 DB_NAME = "clockworkfox-bot"
-PASSWORD = os.environ['MONGO']
+#PASSWORD = os.environ['MONGO']
+PASSWORD = "rivero980122"
 CLIENT = f"mongodb+srv://clockwork:{PASSWORD}@clockworkfox-telegram-b.5eqt8.mongodb.net/clockworkfox-bot?retryWrites=true&w=majority"
 
 cli = pymongo.MongoClient(CLIENT)
@@ -124,9 +125,6 @@ def cancelEv(gId):
       db.delete_one({"_id": gId})
   except Exception as error:
     return error
-
-def getToken():
-    return os.environ['TOKEN']
 
 def loadConfig(gId):
     x = SYS + str(gId) + "_lang.conf"
