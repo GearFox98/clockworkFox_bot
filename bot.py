@@ -18,7 +18,7 @@ import lib.fshandler as fh
 import lib.words as words
 
 #Server
-PORT = int(os.environ.get('PORT', 8443))
+PORT = int(os.environ.get('PORT', 443))
 
 #Token
 TOKEN = os.environ['TOKEN']
