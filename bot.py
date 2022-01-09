@@ -18,7 +18,7 @@ import lib.fshandler as fh
 import lib.words as words
 
 #Server
-PORT = int(os.environ.get('PORT', 443))
+PORT = int(os.environ.get('PORT', '443'))
 
 #Token
 TOKEN = os.environ['TOKEN']
@@ -409,5 +409,7 @@ if __name__ == "__main__":
                         url_path=TOKEN)
   updater.bot.set_webhook("https://clockworkfox-bot.herokuapp.com/" + TOKEN)
   
+  updater.idle()
+
   '''updater.start_polling()
   updater.idle()'''
