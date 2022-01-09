@@ -27,8 +27,7 @@ logging.basicConfig(
 LOGGER = logging.getLogger()
 
 LANG = 'es'
-#TOKEN = os.environ['TOKEN']
-TOKEN = '5054914576:AAEu06B-g64rGnErMSIV6JU4wdUWCpIgHBk' #TOKEN Testing Bot
+TOKEN = os.environ['TOKEN']
 
 def start(update, context):
   LOGGER.info(f"User: {update.effective_user['username']}, Chat status: started")
