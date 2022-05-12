@@ -3,6 +3,12 @@
 
 import logging
 import os
+import clockworkLib.rhandler as rh
+import clockworkLib.fshandler as fh
+import clockworkLib.words as words
+
+from urllib3 import make_headers
+from wsgiref.util import request_uri
 from telegram.ext import (Updater,
                           CommandHandler,
                           CallbackQueryHandler,
@@ -13,12 +19,11 @@ from telegram.ext import (Updater,
 from telegram import (chat,
                       InlineKeyboardMarkup,
                       InlineKeyboardButton)
-import lib.rhandler as rh
-import lib.fshandler as fh
-import lib.words as words
 
 #Server
 PORT = int(os.environ.get('PORT', '8443'))
+
+print(os.getenv("http_proxy"))
 
 #Token
 TOKEN = os.environ['TOKEN']
@@ -372,7 +377,7 @@ if __name__ == "__main__":
   LOGGER.info("Started!")
   print('Now CLOCKWORK FOX is running!\n')
   
-  updater = Updater(token=TOKEN, use_context=True)
+  updater = Updater(token=TOKEN, use_context=True, request_kwargs=REQUEST_KWARGS)
 
   dp = updater.dispatcher
   
@@ -410,5 +415,5 @@ if __name__ == "__main__":
                         webhook_url="https://clockworkfox-bot.herokuapp.com/" + TOKEN)
   updater.idle()
 
-  '''updater.start_polling()
-  updater.idle()'''
+  #updater.start_polling()
+  #updater.idle()
