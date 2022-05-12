@@ -7,7 +7,6 @@ import clockworkLib.rhandler as rh
 import clockworkLib.fshandler as fh
 import clockworkLib.words as words
 
-from urllib3 import make_headers
 from wsgiref.util import request_uri
 from telegram.ext import (Updater,
                           CommandHandler,
