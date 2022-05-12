@@ -22,8 +22,6 @@ from telegram import (chat,
 #Server
 PORT = int(os.environ.get('PORT', '8443'))
 
-print(os.getenv("http_proxy"))
-
 #Token
 TOKEN = os.environ['TOKEN']
 
@@ -376,7 +374,7 @@ if __name__ == "__main__":
   LOGGER.info("Started!")
   print('Now CLOCKWORK FOX is running!\n')
   
-  updater = Updater(token=TOKEN, use_context=True, request_kwargs=REQUEST_KWARGS)
+  updater = Updater(token=TOKEN, use_context=True)
 
   dp = updater.dispatcher
   
