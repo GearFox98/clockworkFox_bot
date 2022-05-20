@@ -1,9 +1,22 @@
-from . import fshandler as fh
-from . import rhandler as rh
-from . import words
+import logging
+from ..clockworkLib import fshandler as fh
+from ..clockworkLib import rhandler as rh
+from ..clockworkLib import words
+
+from telegram import (chat,
+                      InlineKeyboardMarkup,
+                      InlineKeyboardButton)
+
+#LOGGER
+logging.basicConfig(
+  level = logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s,"
+  )
+LOGGER = logging.getLogger()
+
+LANG ='es'
 
 #Raffles
-def raffle(update, context, LOGGER):
+def startRaffle(update, context):
   deleted = update.message.message_id
   gId = update.effective_chat.id
   is_raffle = fh.getIsRaffle(gId)
@@ -48,7 +61,7 @@ def raffle(update, context, LOGGER):
   else:
     context.bot.send_message(gId, "Ya hay un sorteo activo")
 
-def raffle_join(update, context, LOGGER):
+def raffle_join(update, context):
   query = update.callback_query
   gId = query.message.chat.id
   username = query.from_user.username
@@ -82,7 +95,7 @@ def raffle_join(update, context, LOGGER):
   else:
     query.answer('Ya estás en el evento')
   
-def end_raffle(update, context, LOGGER):
+def end_raffle(update, context):
   gId = update.effective_chat.id
   deleted = update.message.message_id
   
@@ -108,7 +121,7 @@ def end_raffle(update, context, LOGGER):
     )
 
 #Cancellations
-def cancel_raffle(update, context, LOGGER):
+def cancel_raffle(update, context):
   try:
     if not fh.cancelRaff(update.effective_chat.id, update.effective_user.id):
       update.message.reply_text(text = "Lo siento, solo el autor del sorteo puede cancelarlo")

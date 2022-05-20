@@ -2,3 +2,8 @@
 .vscode
 __pycache__
 env.bat
+bin
+include
+lib
+lib64
+pyvenv.cfg

@@ -3,14 +3,11 @@
 
 import logging
 import os
-import lib.rhandler as rh
-import lib.fshandler as fh
-import lib.words as words
+import clockworkLib.rhandler as rh
+import clockworkLib.fshandler as fh
+import clockworkLib.words as words
 
-from lib import (basicfun,
-                 events,
-                 raffles)
-
+from wsgiref.util import request_uri
 from telegram.ext import (Updater,
                           CommandHandler,
                           CallbackQueryHandler,
@@ -23,6 +20,9 @@ from telegram import (chat,
                       InlineKeyboardMarkup,
                       InlineKeyboardButton)
 
+from modules import (welcoming,
+                     secretFriend,
+                     raffle)
 
 #Server
 PORT = int(os.environ.get('PORT', '8443'))
@@ -39,46 +39,17 @@ LOGGER = logging.getLogger()
 
 LANG = 'es'
 
+def start(update, context):
+  LOGGER.info(f"User: {update.effective_user['username']}, Chat status: started")
+  context.bot.send_chat_action(update.effective_chat.id, "typing")
+  update.message.reply_text(words.GREETING[LANG])
+    
 def helpPrint(update, context):
   context.bot.send_chat_action(update.effective_chat.id, "typing")
   update.message.reply_text(
     parse_mode = 'HTML',
     text = words.HELP[LANG]
     )
-
-#Language Options TODO
-def changeLang(update, context):
-  en = InlineKeyboardButton(
-    text = 'English',
-    callback_data = 'en'
-  )
-  
-  es = InlineKeyboardButton(
-    text = 'Español',
-    callback_data = 'es'
-  )
-  
-  update.message.reply_text(
-    text = words.LANG[LANG],
-    reply_markup = InlineKeyboardMarkup([
-      [en],
-      [es]
-    ])
-  )
-
-def eng(update, context):
-  query = update.callback_query
-  query.answer()
-  
-  LANG = 'en'
-  print(LANG)
-
-def esp(update, context):
-  query = update.callback_query
-  query.answer()
-  
-  LANG = 'es'
-  print(LANG)
 
 
 
@@ -91,25 +62,22 @@ if __name__ == "__main__":
 
   dp = updater.dispatcher
   
-  dp.add_handler(MessageHandler(Filters.status_update.new_chat_members, basicfun.welcoming(updater, context, LOGGER=LOGGER)))
+  dp.add_handler(MessageHandler(Filters.status_update.new_chat_members, welcoming.welcoming))
 
   dp.add_handler(ConversationHandler(
       entry_points=[
         #COMMANDS
-        CommandHandler('start', basicfun.start(update, context, LOGGER=LOGGER)),
-        CommandHandler('new_sfriend', events.secretFriendStart(LOGGER=LOGGER)),
-        CommandHandler('finish_sfriend', events.secretFriendEnd(LOGGER=LOGGER)),
+        CommandHandler('start', start),
         CommandHandler('help', helpPrint),
-        CommandHandler('new_raffle', raffles.raffle(LOGGER=LOGGER)),
-        CommandHandler('finish_raffle', raffles.end_raffle(LOGGER=LOGGER)),
-        #CommandHandler('language', changeLang), TODO
-        CommandHandler('cancel_raffle', raffles.cancel_raffle(LOGGER=LOGGER)),
-        CommandHandler('cancel_sfriend', raffles.cancel_sfriend(LOGGER=LOGGER)),
+        CommandHandler('new_sfriend', secretFriend.secretFriendStart),
+        CommandHandler('finish_sfriend', secretFriend.secretFriendEnd),
+        CommandHandler('cancel_sfriend', secretFriend.cancel_sfriend),
+        CommandHandler('new_raffle', raffle.startRaffle),
+        CommandHandler('finish_raffle', raffle.end_raffle),
+        CommandHandler('cancel_raffle', raffle.cancel_raffle),
         #CALLBACKS
-        CallbackQueryHandler(pattern='im_in', callback=events.counter(LOGGER=LOGGER)),
-        CallbackQueryHandler(pattern='raffle_join', callback=raffles.raffle_join(LOGGER=LOGGER)),
-        CallbackQueryHandler(pattern='en', callback=eng),
-        CallbackQueryHandler(pattern='es', callback=esp)
+        CallbackQueryHandler(pattern='im_in', callback=secretFriend.counter),
+        CallbackQueryHandler(pattern='raffle_join', callback=raffle.raffle_join)
       ],
 
       states={
@@ -125,5 +93,5 @@ if __name__ == "__main__":
                         webhook_url="https://clockworkfox-bot.herokuapp.com/" + TOKEN)
   updater.idle()'''
 
-  updater.start_polling()
-  updater.idle()
+  #updater.start_polling()
+  #updater.idle()

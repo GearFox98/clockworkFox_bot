@@ -1,9 +1,21 @@
-from . import fshandler as fh
-from . import rhandler as rh
-from . import words
+import logging
+from ..clockworkLib import fshandler as fh
+from ..clockworkLib import rhandler as rh
+from ..clockworkLib import words
+from telegram import (InlineKeyboardMarkup,
+                      InlineKeyboardButton)
 
-#Events
-def secretFriendStart(update, context, LOGGER):
+#LOGGER
+logging.basicConfig(
+  level = logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s,"
+  )
+LOGGER = logging.getLogger()
+
+#START
+def secretFriendStart(update, context):
+  #Don't touch for not TODO
+  LANG = 'es'
+
   id = update.effective_chat.id
   if id < 0:
     userid = update.effective_user.id
@@ -53,7 +65,8 @@ def secretFriendStart(update, context, LOGGER):
   else:
     update.message.reply_text(text="Lo siento, esta acción solo está permitida en grupos")
 
-def secretFriendEnd(update, context, LOGGER):
+#END
+def secretFriendEnd(update, context):
   group_id = update.effective_chat.id
   LOGGER.info(f"Effective: {group_id} is finishing event")
   if group_id < 0:
@@ -103,7 +116,33 @@ def secretFriendEnd(update, context, LOGGER):
           LOGGER.info(f"{group_id} - Delivered")
           fh.setEventStatus(False, group_id)
 
-def counter(update, context, LOGGER):
+#CANCELATOR
+def cancel_sfriend(update, context):
+  gId = update.effective_chat.id
+  try:
+    LOGGER.info(f"Id de chat: {gId}")
+    if gId < 0:
+      userid = update.effective_user.id
+      admins = context.bot.get_chat_administrators(gId)
+      admId = list()
+      for adm in admins:
+        admId.append(adm.user.id)
+      if not admId.__contains__(userid):
+        context.bot.send_chat_action(gId, "typing")
+        update.message.reply_text(
+          text = "Lo siento, debes ser administrador para cancelar eventos"
+        )
+      else:
+        context.bot.send_chat_action(gId, "typing")
+        update.message.reply_text(
+          text = "Evento cancelado"
+        )
+        fh.cancelEv(gId)
+  except Exception as error:
+    context.bot.send_message(gId, str(error))
+
+#COUNTER UTILITY
+def counter(update, context):
   query = update.callback_query
   gId = query.message.chat.id
   username = query.from_user.username
@@ -132,27 +171,3 @@ def counter(update, context, LOGGER):
       LOGGER.info(ex)
   else:
     query.answer('Ya estás en el evento')
-
-def cancel_sfriend(update, context, LOGGER):
-  gId = update.effective_chat.id
-  try:
-    LOGGER.info(f"Id de chat: {gId}")
-    if gId < 0:
-      userid = update.effective_user.id
-      admins = context.bot.get_chat_administrators(gId)
-      admId = list()
-      for adm in admins:
-        admId.append(adm.user.id)
-      if not admId.__contains__(userid):
-        context.bot.send_chat_action(gId, "typing")
-        update.message.reply_text(
-          text = "Lo siento, debes ser administrador para cancelar eventos"
-        )
-      else:
-        context.bot.send_chat_action(gId, "typing")
-        update.message.reply_text(
-          text = "Evento cancelado"
-        )
-        fh.cancelEv(gId)
-  except Exception as error:
-    context.bot.send_message(gId, str(error))
