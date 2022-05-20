@@ -3,9 +3,9 @@
 
 import logging
 import os
-import clockworkLib.rhandler as rh
-import clockworkLib.fshandler as fh
-import clockworkLib.words as words
+import modules.rhandler as rh
+import modules.fshandler as fh
+import modules.words as words
 
 from wsgiref.util import request_uri
 from telegram.ext import (Updater,
@@ -93,5 +93,5 @@ if __name__ == "__main__":
                         webhook_url="https://clockworkfox-bot.herokuapp.com/" + TOKEN)
   updater.idle()'''
 
-  #updater.start_polling()
-  #updater.idle()
+  updater.start_polling()
+  updater.idle()
