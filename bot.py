@@ -3,9 +3,9 @@
 
 import logging
 import os
-import modules.rhandler as rh
-import modules.fshandler as fh
-import modules.words as words
+import modules.clockworkLib.rhandler as rh
+import modules.clockworkLib.fshandler as fh
+import modules.clockworkLib.words as words
 
 from wsgiref.util import request_uri
 from telegram.ext import (Updater,
@@ -21,6 +21,7 @@ from telegram import (chat,
                       InlineKeyboardButton)
 
 from modules import (welcoming,
+                     farewell,
                      secretFriend,
                      raffle)
 
@@ -28,8 +29,7 @@ from modules import (welcoming,
 PORT = int(os.environ.get('PORT', '8443'))
 
 #Token
-#TOKEN = os.environ['TOKEN']
-TOKEN = "5054914576:AAEu06B-g64rGnErMSIV6JU4wdUWCpIgHBk"
+TOKEN = os.environ['TOKEN']
 
 #LOGGER
 logging.basicConfig(
@@ -63,6 +63,7 @@ if __name__ == "__main__":
   dp = updater.dispatcher
   
   dp.add_handler(MessageHandler(Filters.status_update.new_chat_members, welcoming.welcoming))
+  dp.add_handler(MessageHandler(Filters.status_update.left_chat_member, farewell.farewell))
 
   dp.add_handler(ConversationHandler(
       entry_points=[
@@ -87,11 +88,11 @@ if __name__ == "__main__":
   ))
 
 
-  '''updater.start_webhook(listen="0.0.0.0",
+  updater.start_webhook(listen="0.0.0.0",
                         port=PORT,
                         url_path=TOKEN,
                         webhook_url="https://clockworkfox-bot.herokuapp.com/" + TOKEN)
-  updater.idle()'''
-
-  updater.start_polling()
   updater.idle()
+
+  #updater.start_polling()
+  #updater.idle()

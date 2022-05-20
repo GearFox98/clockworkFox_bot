@@ -1,7 +1,7 @@
 import logging
-import fshandler as fh
-import rhandler as rh
-import words
+from .clockworkLib import fshandler as fh
+from .clockworkLib import rhandler as rh
+from .clockworkLib import words
 
 from telegram import (chat,
                       InlineKeyboardMarkup,
