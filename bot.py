@@ -23,7 +23,8 @@ from telegram import (chat,
 from modules import (welcoming,
                      farewell,
                      secretFriend,
-                     raffle)
+                     raffle,
+                     admin)
 
 #Server
 PORT = int(os.environ.get('PORT', '8443'))
@@ -51,6 +52,11 @@ def helpPrint(update, context):
     text = words.HELP[LANG]
     )
 
+def ping(update, context):
+  update.message.reply_text(
+    text="PONG"
+  )
+
 
 
 #Start Bot
@@ -76,6 +82,9 @@ if __name__ == "__main__":
         CommandHandler('new_raffle', raffle.startRaffle),
         CommandHandler('finish_raffle', raffle.end_raffle),
         CommandHandler('cancel_raffle', raffle.cancel_raffle),
+        CommandHandler('change_title', admin.change_custom_title),
+        #DEV COMMAND
+        CommandHandler('ping', ping),
         #CALLBACKS
         CallbackQueryHandler(pattern='im_in', callback=secretFriend.counter),
         CallbackQueryHandler(pattern='raffle_join', callback=raffle.raffle_join)
