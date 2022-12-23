@@ -1,5 +1,6 @@
 .env
 .vscode
+Procfile
 __pycache__
 env.bat
 bin
