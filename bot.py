@@ -100,7 +100,7 @@ if __name__ == "__main__":
   updater.start_webhook(listen="0.0.0.0",
                         port=PORT,
                         url_path=TOKEN,
-                        webhook_url="https://clockworkfox-bot.up.railway.app/" + TOKEN)
+                        webhook_url="https://clockworkfoxbot.onrender.com/" + TOKEN)
 
   #updater.start_webhook(listen="0.0.0.0",
   #                      port=PORT,
