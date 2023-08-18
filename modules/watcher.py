@@ -12,7 +12,7 @@ logging.basicConfig(
   )
 LOGGER = logging.getLogger()
 
-GUARDIAN = '645812555'#os.getenv('guardian')
+GUARDIAN = os.getenv('guardian')
 def whoami(update, context):
   update.message.reply_text(text = f"{update.effective_user.id}")
 
