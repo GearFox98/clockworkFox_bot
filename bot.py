@@ -3,8 +3,8 @@
 
 import logging
 import os
-#import modules.clockworkLib.rhandler as rh
-#import modules.clockworkLib.fshandler as fh
+import modules.clockworkLib.rhandler as rh
+import modules.clockworkLib.fshandler as fh
 import modules.clockworkLib.words as words
 
 from wsgiref.util import request_uri
@@ -100,10 +100,10 @@ if __name__ == "__main__":
   ))
 
 
-  '''updater.start_webhook(listen="0.0.0.0",
+  updater.start_webhook(listen="0.0.0.0",
                         port=PORT,
                         url_path=TOKEN,
-                        webhook_url="https://clockworkfoxbot.onrender.com/" + TOKEN)'''
+                        webhook_url="https://clockworkfoxbot.onrender.com/" + TOKEN)
 
-  updater.start_polling()
-  updater.idle()
+  #updater.start_polling()
+  #updater.idle()
