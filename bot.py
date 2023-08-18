@@ -3,8 +3,8 @@
 
 import logging
 import os
-import modules.clockworkLib.rhandler as rh
-import modules.clockworkLib.fshandler as fh
+#import modules.clockworkLib.rhandler as rh
+#import modules.clockworkLib.fshandler as fh
 import modules.clockworkLib.words as words
 
 from wsgiref.util import request_uri
@@ -24,14 +24,15 @@ from modules import (welcoming,
                      farewell,
                      secretFriend,
                      raffle,
-                     admin)
+                     admin,
+                     watcher)
 
 #Server
 PORT = int(os.environ.get('PORT', '8443'))
 
 #Token
-#TOKEN = os.environ['TOKEN']
-TOKEN = os.getenv('TOKEN')
+#TOKEN = os.getenv('TOKEN')
+TOKEN = '5054914576:AAH-t4h3OfSbdR87SqfETCaFZ_-bVdMkpnI'
 
 #LOGGER
 logging.basicConfig(
@@ -71,7 +72,8 @@ if __name__ == "__main__":
   
   dp.add_handler(MessageHandler(Filters.status_update.new_chat_members, welcoming.welcoming))
   dp.add_handler(MessageHandler(Filters.status_update.left_chat_member, farewell.farewell))
-
+  dp.add_handler(MessageHandler(Filters.photo, watcher.watcher))
+  dp.add_handler(CommandHandler('whoami', watcher.whoami))
   dp.add_handler(ConversationHandler(
       entry_points=[
         #COMMANDS
@@ -98,15 +100,10 @@ if __name__ == "__main__":
   ))
 
 
-  updater.start_webhook(listen="0.0.0.0",
+  '''updater.start_webhook(listen="0.0.0.0",
                         port=PORT,
                         url_path=TOKEN,
-                        webhook_url="https://clockworkfoxbot.onrender.com/" + TOKEN)
+                        webhook_url="https://clockworkfoxbot.onrender.com/" + TOKEN)'''
 
-  #updater.start_webhook(listen="0.0.0.0",
-  #                      port=PORT,
-  #                      url_path=TOKEN,
-  #                      webhook_url="https://clockworkfox-bot.herokuapp.com/" + TOKEN)
-
-  #updater.start_polling()
-  #updater.idle()
+  updater.start_polling()
+  updater.idle()
