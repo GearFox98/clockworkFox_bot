@@ -31,8 +31,7 @@ from modules import (welcoming,
 PORT = int(os.environ.get('PORT', '8443'))
 
 #Token
-#TOKEN = os.getenv('TOKEN')
-TOKEN = '5054914576:AAH-t4h3OfSbdR87SqfETCaFZ_-bVdMkpnI'
+TOKEN = os.getenv('TOKEN')
 
 #LOGGER
 logging.basicConfig(
