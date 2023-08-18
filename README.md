@@ -8,3 +8,8 @@ A telegram bot for "Secret friends" event, raffles and welcomings!
 - Secret friends event
 - Raffles
 
+## Incoming
+
+- Upgrading to new API version
+- Administration management
+
