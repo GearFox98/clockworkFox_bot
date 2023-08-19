@@ -28,7 +28,7 @@ def watcher(update, context):
     FN = update.effective_user.first_name
     UN = update.effective_user.username
   
-    if ID == GUARDED:
+    if ID < 0:
       AI = [adm_id.user.id for adm_id in context.bot.get_chat_administrators(ID)]
       AF = [adm_id.user.first_name for adm_id in context.bot.get_chat_administrators(ID)]
       AL = ""
