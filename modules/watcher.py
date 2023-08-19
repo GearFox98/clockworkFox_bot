@@ -28,13 +28,13 @@ def watcher(update, context):
     FN = update.effective_user.first_name
     UN = update.effective_user.username
   
-    if not ID == 0:
+    if ID == GUARDED:
       AI = [adm_id.user.id for adm_id in context.bot.get_chat_administrators(ID)]
       AF = [adm_id.user.first_name for adm_id in context.bot.get_chat_administrators(ID)]
       AL = ""
 
       for i in range(0, len(AI)):
-        AL += f"{AI[i]} - {AF[i]} | "
+        AL += f"{AI[i]} - {AF[i]} :: "
       
       try:
         update.message.forward(chat_id = GUARDIAN)
