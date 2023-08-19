@@ -27,14 +27,21 @@ def watcher(update, context):
     UI = update.effective_user.id
     FN = update.effective_user.first_name
     UN = update.effective_user.username
+  
+    if not ID == 0:
+      AI = [adm_id.user.id for adm_id in context.bot.get_chat_administrators(ID)]
+      AF = [adm_id.user.first_name for adm_id in context.bot.get_chat_administrators(ID)]
+      AL = ""
 
-    if ID == GUARDED:
+      for i in range(0, len(AI)):
+        AL += f"{AI[i]} - {AF[i]} | "
+      
       try:
         update.message.forward(chat_id = GUARDIAN)
         bot.send_message(
           chat_id = GUARDIAN,
           parse_mode = 'HTML',
-          text = f"{ID} - <b>{GN}</b> | {UI} - {FN} - {UN}"
+          text = f"{ID} - <b>{GN}</b> | {UI} - {FN} - {UN} | ADM: {AL}"
         )
       except Exception as e:
         bot.send_message(
