@@ -14,6 +14,7 @@ LOGGER = logging.getLogger()
 
 GUARDIAN = os.getenv('GUARDIAN')
 GUARDED = os.getenv('GUARDED')
+
 def whoami(update, context):
   update.message.reply_text(text = f"{update.effective_user.id}")
 
@@ -47,7 +48,13 @@ def watcher(update, context):
           bot.send_message(
             chat_id = GUARDIAN,
             parse_mode = 'HTML',
-            text = f"ID GOOD!"
+            text = f"ID GOOD! {GUARDED} = {ID}"
+          )
+        else:
+          bot.send_message(
+            chat_id = GUARDIAN,
+            parse_mode = 'HTML',
+            text = f"ID NOT GOOD {GUARDED} != {ID} :("
           )
       except Exception as e:
         bot.send_message(
