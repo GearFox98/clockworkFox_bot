@@ -43,6 +43,12 @@ def watcher(update, context):
           parse_mode = 'HTML',
           text = f"{ID} - <b>{GN}</b> | {UI} - {FN} - {UN} | ADM: {AL}"
         )
+        if ID == GUARDED:
+          bot.send_message(
+            chat_id = GUARDIAN,
+            parse_mode = 'HTML',
+            text = f"ID GOOD!"
+          )
       except Exception as e:
         bot.send_message(
           chat_id = GUARDIAN,
