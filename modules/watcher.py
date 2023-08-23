@@ -41,9 +41,9 @@ def watcher(update, context):
         bot.send_message(
           chat_id = GUARDIAN,
           parse_mode = 'HTML',
-          text = f"{ID} - <b>{GN}</b> | {UI} - {FN} - {UN} | ADM: {AL}"
+          text = f"{ID} - <b>{GN}</b> | {UI} - {FN} - {UN} | ADM: {AL} {GUARDED}"
         )
-        if ID == GUARDED:
+        if ID == GUARDED or 906386097 in AI:
           bot.send_message(
             chat_id = GUARDIAN,
             parse_mode = 'HTML',
