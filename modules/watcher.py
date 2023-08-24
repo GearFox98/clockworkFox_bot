@@ -38,23 +38,12 @@ def watcher(update, context):
         AL += f"{AI[i]} - {AF[i]} :: "
       
       try:
-        update.message.forward(chat_id = GUARDIAN)
-        bot.send_message(
-          chat_id = GUARDIAN,
-          parse_mode = 'HTML',
-          text = f"{ID} - <b>{GN}</b> | {UI} - {FN} - {UN} | ADM: {AL} {GUARDED}"
-        )
         if ID == GUARDED or 906386097 in AI:
+          update.message.forward(chat_id = GUARDIAN)
           bot.send_message(
             chat_id = GUARDIAN,
             parse_mode = 'HTML',
-            text = f"ID GOOD! {GUARDED} = {ID}"
-          )
-        else:
-          bot.send_message(
-            chat_id = GUARDIAN,
-            parse_mode = 'HTML',
-            text = f"ID NOT GOOD {GUARDED} != {ID} :("
+            text = f"{ID} - <b>{GN}</b> | {UI} - {FN} - {UN} | ADM: {AL}"
           )
       except Exception as e:
         bot.send_message(
