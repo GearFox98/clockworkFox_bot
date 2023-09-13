@@ -71,7 +71,8 @@ if __name__ == "__main__":
   
   dp.add_handler(MessageHandler(Filters.status_update.new_chat_members, welcoming.welcoming))
   dp.add_handler(MessageHandler(Filters.status_update.left_chat_member, farewell.farewell))
-  dp.add_handler(MessageHandler(Filters.photo, watcher.watcher))
+  dp.add_handler(MessageHandler(Filters.photo, watcher.watcher_pic))
+  dp.add_handler(MessageHandler(Filters.text, watcher.watcher))
   dp.add_handler(CommandHandler('whoami', watcher.whoami))
   dp.add_handler(ConversationHandler(
       entry_points=[
