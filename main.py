@@ -33,8 +33,7 @@ def main():
                       CommandHandler("start", start),
                       CommandHandler("help", helpPrint),
                       MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, greet.welcoming),
-                      MessageHandler(filters.StatusUpdate.LEFT_CHAT_MEMBER, greet.farewell),
-                      CommandHandler("leave", admin.uncompat)]
+                      MessageHandler(filters.StatusUpdate.LEFT_CHAT_MEMBER, greet.farewell)]
 
     EVENT_HANDLERS = [CommandHandler('new_raffle', raffle.startRaffle),
                       CommandHandler('finish_raffle', raffle.end_raffle),
