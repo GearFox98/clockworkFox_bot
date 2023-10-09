@@ -11,8 +11,12 @@ logging.basicConfig(
 LOGGER = logging.getLogger()
 
 async def uncompat(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    UNCOMPAT_I = getenv("UNCOMPAT_I").split(",")
-    UNCOMPAT_U = getenv("UNCOMPAT_U").split(",")
+    UNCOMPAT_I = getenv("UNCOMPAT_I")
+    UNCOMPAT_U = getenv("UNCOMPAT_U")
+
+    UNCOMPAT_I = UNCOMPAT_I.split(",")
+    UNCOMPAT_U = UNCOMPAT_U.split(",")
+
     GUARDIAN = getenv("GUARDIAN")
     bot = context.bot
 
