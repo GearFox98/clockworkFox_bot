@@ -63,13 +63,19 @@ async def ban_user(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
                 if admin == "OWNER":
                     # Owner case
-                    LOGGER.info(f"The owner of {update.effective_chat.full_name} has issued ban!")
-                    await update.effective_chat.ban_member(to_ban_user)
+                    LOGGER.info(f"The owner of {update.effective_chat.title} has issued ban!")
+                    if update.message.from_user.id == to_ban_user:
+                        await update.message.reply_text("No te puedes banear a ti mismo")
+                    else:
+                        await update.effective_chat.ban_member(to_ban_user)
                 elif admin != None:
                     # Administrator case
                     if admin['can_restrict_members']:
-                        LOGGER.info(f"An admin of {update.effective_chat.full_name} has issued ban!")
-                        await update.effective_chat.ban_member(to_ban_user)
+                        LOGGER.info(f"An admin of {update.effective_chat.title} has issued ban!")
+                        if update.message.from_user.id == to_ban_user:
+                            await update.message.reply_text("No te puedes banear a ti mismo")
+                        else:
+                            await update.effective_chat.ban_member(to_ban_user)
                     else:
                         raise RustyCog(Exceptions.CANT_BAN)
                 else:
