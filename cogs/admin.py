@@ -1,5 +1,5 @@
 import logging
-from cogs.exceptions import Exceptions
+from cogs.exceptions import Exceptions, RustyCog
 from telegram import Update
 from telegram.ext import ContextTypes
 from telegram.constants import ChatMemberStatus
@@ -56,7 +56,7 @@ async def ban_user(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                 if update.message.reply_to_message != None:
                     to_ban_user = update.message.reply_to_message.from_user.id
                 else:
-                    raise Exception(Exceptions.EMPTY_USER)
+                    raise RustyCog(Exceptions.EMPTY_USER)
 
                 # Gets if owner or a dictionary with permissions
                 admin = await check_permissions(update, context)
@@ -71,15 +71,15 @@ async def ban_user(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                         LOGGER.info(f"An admin of {update.effective_chat.full_name} has issued ban!")
                         await update.effective_chat.ban_member(to_ban_user)
                     else:
-                        raise Exception(Exceptions.CANT_BAN)
+                        raise RustyCog(Exceptions.CANT_BAN)
                 else:
                     # Not an administrator case
-                    raise Exception(Exceptions.NOT_AN_ADMIN)
+                    raise RustyCog(Exceptions.NOT_AN_ADMIN)
             else:
-                raise Exception(Exceptions.NOT_A_GROUP)
-        except Exception as e:
-            LOGGER.error(f"{e.args[0]} - Address to exceptions module for more info...")
-            match e.args[0]:
+                raise RustyCog(Exceptions.NOT_A_GROUP)
+        except RustyCog as e:
+            LOGGER.error(f"{e.status} - Address to exceptions module for more info...")
+            match e.status:
                 case Exceptions.CANT_BAN:
                     await update.effective_chat.send_action("typing")
                     await update.effective_chat.send_message(f"Lo siento, no tienes permitida esa acción")
