@@ -80,25 +80,24 @@ async def ban_user(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         except RustyCog as e:
             status = e.status
             LOGGER.error(f"{status} - Address to exceptions module for more info...")
-            match status:
-                case Exceptions.CANT_BAN:
-                    await update.effective_chat.send_action("typing")
-                    await update.effective_chat.send_message(f"Lo siento, no tienes permitida esa acción")
-                    return
-                case Exceptions.NOT_A_GROUP:
-                    await update.effective_chat.send_action("typing")
-                    await update.effective_chat.send_message(f"Esta acción solo funciona en grupos")
-                    return
-                case Exceptions.EMPTY_USER:
-                    await update.effective_chat.send_action("typing")
-                    await update.effective_chat.send_message(f"Debes responder al mensaje del usuario a expulsar")
-                    return
-                case Exceptions.NOT_AN_ADMIN:
-                    await update.effective_chat.send_action("typing")
-                    await update.effective_chat.send_message(f"No tienes permisos de administrador, no puedes realizar esta acción")
-                    return
-                case _:
-                    await update.effective_chat.send_action("typing")
-                    await update.effective_chat.send_message("Ha ocurrido un error, asegúrate de que cuento con los <b>permisos</b> suficientes para hacer esto o que estés <b>respondiendo al mensaje del usuario</b> a expulsar",
-                                                       parse_mode="HTML")
-                    return
+            if status == Exceptions.CANT_BAN:
+                await update.effective_chat.send_action("typing")
+                await update.effective_chat.send_message(f"Lo siento, no tienes permitida esa acción")
+                return
+            elif status == Exceptions.NOT_A_GROUP:
+                await update.effective_chat.send_action("typing")
+                await update.effective_chat.send_message(f"Esta acción solo funciona en grupos")
+                return
+            elif status == Exceptions.EMPTY_USER:
+                await update.effective_chat.send_action("typing")
+                await update.effective_chat.send_message(f"Debes responder al mensaje del usuario a expulsar")
+                return
+            elif status == Exceptions.NOT_AN_ADMIN:
+                await update.effective_chat.send_action("typing")
+                await update.effective_chat.send_message(f"No tienes permisos de administrador, no puedes realizar esta acción")
+                return
+            else:
+                await update.effective_chat.send_action("typing")
+                await update.effective_chat.send_message("Ha ocurrido un error, asegúrate de que cuento con los <b>permisos</b> suficientes para hacer esto o que estés <b>respondiendo al mensaje del usuario</b> a expulsar",
+                                                    parse_mode="HTML")
+                return
