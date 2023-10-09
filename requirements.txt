@@ -1,2 +1,11 @@
+<<<<<<< HEAD
+=======
+certifi==2023.7.22
+dnspython==2.4.2
+h11==0.14.0
+httpcore==0.18.0
+httpx==0.25.0
+idna==3.4
+>>>>>>> 5fb6eb2 (Upgrading API)
 pymongo==4.5.0
 python-telegram-bot
