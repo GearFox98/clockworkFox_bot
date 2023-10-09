@@ -1,4 +1,3 @@
-import vars #TEMPORARY
 import os
 
 import logging
