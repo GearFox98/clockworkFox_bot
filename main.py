@@ -27,7 +27,7 @@ PORT = int(os.environ.get('PORT', '8443'))
 
 
 def main():
-    app = ApplicationBuilder().token(vars.TOKEN).build()
+    app = ApplicationBuilder().token(TOKEN).build()
 
     BASIC_HANDLERS = [CommandHandler("ping", ping),
                       CommandHandler("start", start),

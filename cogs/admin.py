@@ -138,5 +138,5 @@ async def feedback(bot, guardian, gname, args):
             text = inform
         )
         LOGGER.info(inform)
-    except Exception as e:
-        LOGGER.error(f"Clockwork crashed at {gname}\n{args}\n{e}")
+    except Exception as _e:
+        LOGGER.error(f"Clockwork crashed at {gname}\n{args}")
