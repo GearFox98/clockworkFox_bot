@@ -43,6 +43,17 @@ async def check_permissions(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     return None
 
+async def notify_owner(update: Update, context: ContextTypes.DEFAULT_TYPE, issuer, chat):
+    admins = await update.effective_chat.get_administrators()
+
+    for admin in admins:
+        if admin.status == ChatMemberStatus.OWNER:
+            owner = admin.user.id
+
+            await context.bot.send_message(owner,
+                                     text=f"Sentencia de expulsión ejecutada por {issuer} en el grupo {chat}")
+            break
+
 # Ban an user
 async def ban_user(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     is_admin = await check_self_admin(update, context)
@@ -76,6 +87,7 @@ async def ban_user(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                             await update.message.reply_text("No te puedes banear a ti mismo")
                         else:
                             await update.effective_chat.ban_member(to_ban_user)
+                            await notify_owner(update, context, update.message.from_user.full_name, update.effective_chat.title)
                     else:
                         raise RustyCog(Exceptions.CANT_BAN)
                 else:
