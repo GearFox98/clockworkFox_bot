@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sat Jan 23 21:28:55 2021
-Raffle Handler
-@author: https://github.com/GearFox98
-"""
-
 import random as rd
 
 def scramble(objects):
