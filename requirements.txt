@@ -1,2 +1,11 @@
-pymongo==4.5.0
+anyio
+certifi
+dnspython
+h11
+httpcore
+httpx
+idna
+pymongo
 python-telegram-bot
+sniffio
+tornado
