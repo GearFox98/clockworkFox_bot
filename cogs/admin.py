@@ -78,8 +78,9 @@ async def ban_user(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             else:
                 raise RustyCog(Exceptions.NOT_A_GROUP)
         except RustyCog as e:
-            LOGGER.error(f"{e.status} - Address to exceptions module for more info...")
-            match e.status:
+            status = e.status
+            LOGGER.error(f"{status} - Address to exceptions module for more info...")
+            match status:
                 case Exceptions.CANT_BAN:
                     await update.effective_chat.send_action("typing")
                     await update.effective_chat.send_message(f"Lo siento, no tienes permitida esa acción")
