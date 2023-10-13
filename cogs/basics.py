@@ -27,3 +27,14 @@ async def ping(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
   await update.message.reply_text(
     text="PONG"
   )
+
+async def say(update: Update, context: ContextTypes.DEFAULT_TYPE, message: str, chat_id = None) -> None:
+  if chat_id == None:
+    await update.effective_chat.send_action("typing")
+    await update.effective_chat.send_message(text = message,
+                                            parse_mode= "HTML")
+  else:
+    await context.bot.send_chat_action(chat_id,
+                                       action="typing")
+    await context.bot.send_message(chat_id,
+                                   text=message)

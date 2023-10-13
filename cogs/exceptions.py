@@ -11,3 +11,5 @@ class Exceptions(Enum):
     NOT_A_GROUP = 1
     EMPTY_USER = 2
     NOT_AN_ADMIN = 3
+    NO_ARGUMENT_PROVIDED = 4
+    NON_EXISTENT_USER = 5
