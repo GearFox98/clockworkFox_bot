@@ -7,9 +7,9 @@ A telegram bot for "Secret friends" event, raffles and welcomings!
 - Welcoming
 - Secret friends event
 - Raffles
+- User registry (only for groups, just joins and leaves)
 
 ## Incoming
 
-- Upgrading to new API version
-- Administration management
+- Administration management (Development)
 
